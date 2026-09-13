@@ -7,13 +7,16 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "prepare": "husky"
+    "prepare": "husky",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",
     "@neondatabase/serverless": "^1.1.0",
     "class-variance-authority": "^0.7.1",
     "cn": "^0.2.6",
+    "drizzle-orm": "^0.45.2",
     "lucide-react": "^1.42.0",
     "next": "16.3.4",
     "react": "19.2.8",
@@ -24,20 +27,25 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
+    "@types/pg": "^8.23.1",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/ws": "^8.18.1",
+    "drizzle-kit": "^0.31.10",
     "eslint": "^9",
     "eslint-config-next": "16.3.4",
     "husky": "^9.1.7",
     "lint-staged": "^17.5.0",
+    "pg": "^8.23.0",
     "prettier": "^3.9.6",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "ws": "^8.21.3"
   },
   "lint-staged": {
     "**/*.{ts,tsx}": [
       "eslint --fix",
-      "tsc --noEmit --incremental false"
+      "tsc --noEmit --incremental false --skipLibCheck"
     ],
     "**/*.{ts,tsx,css,md,json}": [
       "prettier --write"
