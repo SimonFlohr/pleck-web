@@ -1,4 +1,11 @@
-import { date, pgTable, serial, text, timestamp } from "drizzle-orm/pg-core";
+import {
+  integer,
+  pgEnum,
+  pgTable,
+  serial,
+  text,
+  timestamp,
+} from "drizzle-orm/pg-core";
 
 // Placeholder table to prove the migration pipeline works.
 // Replace later.
@@ -16,4 +23,18 @@ export const familyCircles = pgTable("family_circles", {
   avatarKey: text("avatar_key"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// —— members ————————————————————————————————————————————————
+export const memberRoleEnum = pgEnum("member_role", ["owner", "member"]);
+
+export const members = pgTable("members", {
+  id: serial("id").primaryKey(),
+  circleId: integer("circle_id")
+    .notNull()
+    .references(() => familyCircles.id, { onDelete: "cascade" }),
+  clerkId: text("clerk_id").notNull(),
+  role: memberRoleEnum("role").notNull().default("member"),
+  joinedAt: timestamp("joined_at"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
 });
