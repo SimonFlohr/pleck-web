@@ -21,7 +21,7 @@ const db = drizzle({ client: sql });
 const MEMBERS = [
   {
     displayName: "Simon",
-    email: "simon@pleck.dev",
+    email: "simonflohr31@gmail.com",
     role: "owner" as const,
     timezone: "America/Chicago",
     language: "en" as const,
