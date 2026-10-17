@@ -1,4 +1,5 @@
-import { S3Client } from "@aws-sdk/client-s3";
+import { GetObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 if (!process.env.AWS_ACCESS_KEY_ID) {
   throw new Error("AWS_ACCESS_KEY_ID is not set");
@@ -16,3 +17,11 @@ export const s3 = new S3Client({
 });
 
 export const BUCKET = process.env.AWS_S3_BUCKET_NAME ?? "pleck-media-prod-use2";
+
+export const PRESIGN_GET_TTL_SECONDS = 15 * 60; // 15 minutes
+
+export function presignGet(key: string, expiresIn = PRESIGN_GET_TTL_SECONDS) {
+  return getSignedUrl(s3, new GetObjectCommand({ Bucket: BUCKET, Key: key }), {
+    expiresIn,
+  });
+}
