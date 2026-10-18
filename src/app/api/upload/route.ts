@@ -6,22 +6,9 @@ import { db } from "@/lib/db";
 import { members } from "@/lib/db/schema";
 import { s3, BUCKET } from "@/lib/s3";
 import { randomUUID } from "crypto";
+import { ALLOWED_TYPES, MAX_SIZE_BYTES } from "@/lib/media-types";
 
 // ── Config ────────────────────────────────────
-const ALLOWED_TYPES: Record<string, string> = {
-  // Photos
-  "image/jpeg": "jpg",
-  "image/png": "png",
-  "image/webp": "webp",
-  "image/heic": "heic",
-  "image/heif": "heif",
-  // Voice
-  "audio/mp4": "m4a",
-  "audio/webm": "webm",
-  "audio/mpeg": "mp3",
-};
-
-const MAX_SIZE_BYTES = 50 * 1024 * 1024; // 50 MB
 const PRESIGN_EXPIRES_SECONDS = 300; // 5 minutes
 
 // ── Route ─────────────────────────────────────
