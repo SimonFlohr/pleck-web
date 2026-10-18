@@ -1,5 +1,67 @@
-import Image from "next/image";
+import Link from "next/link";
+import { auth } from "@clerk/nextjs/server";
+import { Plus } from "lucide-react";
+import { buttonVariants } from "@/components/ui/button";
+import { FeedList } from "@/components/feed/feed-list";
+import { getViewer } from "@/lib/auth/viewer";
+import { loadFeedPage } from "@/lib/feed/load";
 
-export default function Home() {
-	return <div></div>;
+type Props = {
+  searchParams: Promise<{ q?: string | string[] }>;
+};
+
+export default async function FeedPage({ searchParams }: Props) {
+  const viewer = await getViewer();
+
+  if (viewer.status === "signed-out") {
+    const { redirectToSignIn } = await auth();
+    return redirectToSignIn();
+  }
+
+  if (viewer.status === "no-circle") {
+    return (
+      <main className="mx-auto max-w-md px-4 py-20 text-center">
+        <div className="rounded-2xl border border-border/70 bg-card p-6 sm:p-8 shadow-xs">
+          <h1 className="text-lg font-semibold tracking-tight text-foreground">
+            You&apos;re not in a circle yet
+          </h1>
+          <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+            Pleck is a private family vault. Ask your circle owner for a join
+            link to get started.
+          </p>
+        </div>
+      </main>
+    );
+  }
+
+  const { member } = viewer;
+  const { q: rawQ } = await searchParams;
+  const q = typeof rawQ === "string" ? rawQ.trim() : "";
+
+  const firstPage = await loadFeedPage(member.circleId, { q });
+  const reader = { language: member.language, timezone: member.timezone };
+
+  return (
+    <main className="mx-auto w-full max-w-xl sm:max-w-2xl px-3.5 sm:px-6 pb-24">
+      <h1 className="sr-only">Pleck feed</h1>
+      <div className="sticky top-0 z-10 -mx-3.5 mb-4 flex items-center justify-between gap-3 border-b border-border/40 bg-background/85 px-3.5 py-3 backdrop-blur-md sm:mx-0 sm:border-none sm:bg-background/90 sm:px-0">
+        {/* PLK-41: <SearchBar /> goes here */}
+        <div className="flex-1" />
+        <Link
+          href="/compose"
+          className={buttonVariants({
+            size: "sm",
+            className:
+              "gap-1 rounded-full px-3 text-xs sm:text-sm font-medium shadow-2xs",
+          })}
+        >
+          <Plus className="size-3.5 sm:size-4" />
+          <span>New spark</span>
+        </Link>
+      </div>
+
+      {/* key={q} remounts the list when the search changes, resetting cursor + groups */}
+      <FeedList key={q} initialPage={firstPage} reader={reader} q={q} />
+    </main>
+  );
 }
