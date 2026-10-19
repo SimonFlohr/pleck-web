@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { MAX_TEXT_LENGTH } from "@/lib/media-types";
+import { postSpark } from "@/lib/sparks/client";
 
 type SparkKind = "text" | "photo";
 
@@ -19,13 +20,17 @@ export function Composer({ circleId }: { circleId: number }) {
   const [error, setError] = useState<string | null>(null);
 
   const submitting = status !== null;
-  const canSubmit = false;
+  const canSubmit = kind === "text" ? caption.trim().length > 0 : false;
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     if (!canSubmit || submitting) return;
     setError(null);
     try {
+      if (kind === "text") {
+        setStatus("Posting…");
+        await postSpark({ type: "text", textContent: caption });
+      }
       router.push("/");
       router.refresh();
     } catch (err) {
@@ -88,6 +93,11 @@ export function Composer({ circleId }: { circleId: number }) {
                 : "Add a caption…"
             }
             className="min-h-[140px] resize-none rounded-xl border-border/80 bg-background/50 p-3 text-sm leading-relaxed transition-colors placeholder:text-muted-foreground/60 focus-visible:border-ring focus-visible:ring-1"
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+                e.currentTarget.form?.requestSubmit();
+              }
+            }}
           />
         </div>
 

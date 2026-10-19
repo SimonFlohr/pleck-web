@@ -28,42 +28,42 @@ const MEMBERS = [
   },
   {
     displayName: "Gizzell",
-    email: "gizzell@pleck.dev",
+    email: "simonflohr31+gizzell@pleck.dev",
     role: "member" as const,
     timezone: "America/Chicago",
     language: "en" as const,
   },
   {
     displayName: "Aaliyah",
-    email: "aaliyah@pleck.dev",
+    email: "simonflohr31+aaliyah@pleck.dev",
     role: "member" as const,
     timezone: "America/Chicago",
     language: "en" as const,
   },
   {
     displayName: "Nico",
-    email: "nico@pleck.dev",
+    email: "simonflohr31+nico@pleck.dev",
     role: "member" as const,
     timezone: "Europe/Amsterdam",
     language: "nl" as const,
   },
   {
     displayName: "Femke",
-    email: "femke@pleck.dev",
+    email: "simonflohr31+femke@pleck.dev",
     role: "member" as const,
     timezone: "Europe/Amsterdam",
     language: "nl" as const,
   },
   {
     displayName: "Eline",
-    email: "eline@pleck.dev",
+    email: "simonflohr31+eline@pleck.dev",
     role: "member" as const,
     timezone: "Europe/Amsterdam",
     language: "nl" as const,
   },
   {
     displayName: "Daniel",
-    email: "daniel@pleck.dev",
+    email: "simonflohr31+daniel@pleck.dev",
     role: "member" as const,
     timezone: "Europe/Amsterdam",
     language: "en" as const, // reads English in the Netherlands
@@ -84,10 +84,7 @@ interface SparkDef {
 }
 
 // Week 1: Oct 4–10 2026
-// Week 2: Oct 11–18 2026
-// Week 3: Oct 19–25 2026
-// EU DST: clocks fall back Oct 25 at 03:00 → 02:00
-// US DST: clocks fall back Nov 1 (out of seed range — tested separately)
+// Week 2: Oct 11–17 2026
 
 const SPARK_DEFS: SparkDef[] = [
   // ── Week 1 ──────────────────────────────────────────
@@ -155,13 +152,50 @@ const SPARK_DEFS: SparkDef[] = [
     type: "text",
     textContent: "Family movie night — Aaliyah picked Encanto again 😂",
   },
+  {
+    authorName: "Femke",
+    utcIso: "2026-10-09T07:00:00Z",
+    type: "text",
+    textContent:
+      "Vrijdagochtend, koffie en stilte voordat iedereen wakker is ☕",
+  },
+  {
+    authorName: "Nico",
+    utcIso: "2026-10-09T16:00:00Z",
+    type: "voice",
+    textContent: null,
+  },
+  {
+    authorName: "Aaliyah",
+    utcIso: "2026-10-10T15:00:00Z",
+    type: "text",
+    textContent: "I can ride my bike without training wheels!! 🚲",
+  },
+  {
+    authorName: "Daniel",
+    utcIso: "2026-10-10T17:30:00Z",
+    type: "text",
+    textContent: "LEGO Technic finished! Took us a week and a half",
+  },
 
   // ── Week 2 ──────────────────────────────────────────
   {
     authorName: "Nico",
-    utcIso: "2026-10-12T07:00:00Z",
+    utcIso: "2026-10-11T07:00:00Z",
     type: "photo",
     textContent: "Zondagochtend pannenkoeken 🥞",
+  },
+  {
+    authorName: "Simon",
+    utcIso: "2026-10-11T16:00:00Z",
+    type: "photo",
+    textContent: "Sunday brunch at the new spot on Division",
+  },
+  {
+    authorName: "Gizzell",
+    utcIso: "2026-10-11T20:00:00Z",
+    type: "text",
+    textContent: "Aaliyah sleeping on Simon's lap, not moving for an hour",
   },
   {
     authorName: "Aaliyah",
@@ -170,178 +204,138 @@ const SPARK_DEFS: SparkDef[] = [
     textContent: "Drew a picture of our whole family ❤️",
   },
   {
-    authorName: "Simon",
-    utcIso: "2026-10-13T01:00:00Z",
-    type: "photo",
-    textContent: "Chicago skyline from the rooftop",
-  },
-  {
     authorName: "Daniel",
-    utcIso: "2026-10-13T15:30:00Z",
+    utcIso: "2026-10-12T15:30:00Z",
     type: "text",
     textContent: "Started building a LEGO Technic set with Eline",
   },
   {
     authorName: "Eline",
-    utcIso: "2026-10-13T15:45:00Z",
+    utcIso: "2026-10-12T15:45:00Z",
     type: "photo",
     textContent: "Het LEGO project begint!",
   },
   {
+    authorName: "Simon",
+    utcIso: "2026-10-12T23:00:00Z",
+    type: "photo",
+    textContent: "Chicago skyline from the rooftop",
+  },
+  {
     authorName: "Femke",
-    utcIso: "2026-10-14T09:00:00Z",
+    utcIso: "2026-10-13T09:00:00Z",
     type: "text",
     textContent: "Eline had een 10 voor haar toets! 🎓",
   },
   {
-    authorName: "Gizzell",
-    utcIso: "2026-10-14T23:30:00Z",
-    type: "voice",
-    textContent: null,
-  },
-  {
-    authorName: "Simon",
-    utcIso: "2026-10-15T18:00:00Z",
-    type: "text",
-    textContent: "Aaliyah lost her second tooth 🦷",
-  },
-  {
-    authorName: "Nico",
-    utcIso: "2026-10-16T12:00:00Z",
-    type: "text",
-    textContent: "Nieuwe recept geprobeerd, stamppot met rookworst",
-  },
-  {
-    authorName: "Aaliyah",
-    utcIso: "2026-10-16T21:00:00Z",
-    type: "text",
-    textContent: "The tooth fairy brought me 5 dollars!!! 🧚",
-  },
-  {
     authorName: "Femke",
-    utcIso: "2026-10-17T08:30:00Z",
-    type: "photo",
-    textContent: "Herfstbladeren in de achtertuin 🍂",
-  },
-  {
-    authorName: "Daniel",
-    utcIso: "2026-10-17T14:00:00Z",
-    type: "photo",
-    textContent: "LEGO Technic halfway done",
-  },
-  {
-    authorName: "Eline",
-    utcIso: "2026-10-18T10:00:00Z",
-    type: "text",
-    textContent: "Vandaag naar opa en oma! 🏡",
-  },
-
-  // ── Week 3 ──────────────────────────────────────────
-  {
-    authorName: "Simon",
-    utcIso: "2026-10-19T16:00:00Z",
-    type: "photo",
-    textContent: "Sunday brunch at the new spot on Division",
-  },
-  {
-    authorName: "Gizzell",
-    utcIso: "2026-10-19T20:00:00Z",
-    type: "text",
-    textContent: "Aaliyah sleeping on Simon's lap, not moving for an hour",
-  },
-  {
-    authorName: "Nico",
-    utcIso: "2026-10-20T06:30:00Z",
-    type: "voice",
-    textContent: null,
-  },
-  {
-    authorName: "Femke",
-    utcIso: "2026-10-20T13:00:00Z",
+    utcIso: "2026-10-13T13:00:00Z",
     type: "photo",
     textContent: "Nieuwe planten voor de vensterbank 🌱",
   },
   {
-    authorName: "Aaliyah",
-    utcIso: "2026-10-21T15:00:00Z",
-    type: "text",
-    textContent: "I can ride my bike without training wheels!! 🚲",
-  },
-  {
-    authorName: "Daniel",
-    utcIso: "2026-10-21T17:30:00Z",
-    type: "text",
-    textContent: "LEGO Technic finished! Took us a week and a half",
+    authorName: "Gizzell",
+    utcIso: "2026-10-13T23:30:00Z",
+    type: "voice",
+    textContent: null,
   },
   {
     authorName: "Eline",
-    utcIso: "2026-10-22T09:00:00Z",
+    utcIso: "2026-10-14T09:00:00Z",
     type: "photo",
     textContent: "Ons LEGO meesterwerk! 🏗️",
   },
   {
     authorName: "Simon",
-    utcIso: "2026-10-22T23:00:00Z",
+    utcIso: "2026-10-14T18:00:00Z",
+    type: "text",
+    textContent: "Aaliyah lost her second tooth 🦷",
+  },
+  {
+    authorName: "Simon",
+    utcIso: "2026-10-14T23:00:00Z",
     type: "text",
     textContent:
       "FaceTimed with everyone tonight, Aaliyah showed off her bike skills to opa",
   },
   {
+    authorName: "Nico",
+    utcIso: "2026-10-15T12:00:00Z",
+    type: "text",
+    textContent: "Nieuwe recept geprobeerd, stamppot met rookworst",
+  },
+  {
+    authorName: "Daniel",
+    utcIso: "2026-10-15T14:00:00Z",
+    type: "photo",
+    textContent: "LEGO Technic halfway done",
+  },
+  {
+    authorName: "Aaliyah",
+    utcIso: "2026-10-15T21:00:00Z",
+    type: "text",
+    textContent: "The tooth fairy brought me 5 dollars!!! 🧚",
+  },
+  {
+    authorName: "Femke",
+    utcIso: "2026-10-16T08:30:00Z",
+    type: "photo",
+    textContent: "Herfstbladeren in de achtertuin 🍂",
+  },
+  {
     authorName: "Gizzell",
-    utcIso: "2026-10-23T14:00:00Z",
+    utcIso: "2026-10-16T14:00:00Z",
     type: "photo",
     textContent: "Fall decorations are up 🎃",
   },
   {
     authorName: "Nico",
-    utcIso: "2026-10-23T16:00:00Z",
+    utcIso: "2026-10-16T16:00:00Z",
     type: "text",
     textContent:
       "Trots op Aaliyah met haar fiets! Facetime was gezellig vanavond",
   },
   {
-    authorName: "Femke",
-    utcIso: "2026-10-24T07:00:00Z",
-    type: "text",
-    textContent:
-      "Vrijdagochtend, koffie en stilte voordat iedereen wakker is ☕",
-  },
-  // ★ EU DST EDGE CASE — Oct 25 2026, clocks fall back 03:00→02:00
-  {
     authorName: "Eline",
-    utcIso: "2026-10-25T01:30:00Z", // 03:30 CEST → 02:30 CET
+    utcIso: "2026-10-17T01:30:00Z",
     type: "text",
-    textContent: "Kon niet slapen, de klok ging terug vannacht ⏰",
+    textContent: "Kon niet slapen EN door mijn wekker geslapen!! ⏰",
     tag: "eu-dst-fallback",
   },
   {
+    authorName: "Eline",
+    utcIso: "2026-10-17T09:00:00Z",
+    type: "text",
+    textContent: "Vandaag naar opa en oma! 🏡",
+  },
+  {
     authorName: "Daniel",
-    utcIso: "2026-10-25T10:00:00Z",
+    utcIso: "2026-10-17T10:00:00Z",
     type: "photo",
     textContent: "Extra hour of sleep = extra pancakes",
     tag: "eu-dst-morning-after",
   },
   {
     authorName: "Aaliyah",
-    utcIso: "2026-10-25T17:00:00Z",
+    utcIso: "2026-10-17T15:00:00Z",
     type: "photo",
     textContent: "Pumpkin painting with mama! 🎃",
   },
   {
-    authorName: "Simon",
-    utcIso: "2026-10-25T22:00:00Z",
-    type: "text",
-    textContent: "Week three wrapped. This vault is filling up fast.",
-  },
-  {
     authorName: "Femke",
-    utcIso: "2026-10-25T19:00:00Z",
+    utcIso: "2026-10-17T17:00:00Z",
     type: "voice",
     textContent: null,
   },
   {
+    authorName: "Simon",
+    utcIso: "2026-10-17T18:00:00Z",
+    type: "text",
+    textContent: "Week two wrapped. This vault is filling up fast.",
+  },
+  {
     authorName: "Gizzell",
-    utcIso: "2026-10-25T21:00:00Z",
+    utcIso: "2026-10-17T20:00:00Z",
     type: "text",
     textContent:
       "Watching the sunset from the back porch, thinking about how lucky we are 🧡",
@@ -376,25 +370,49 @@ async function seed() {
 
   // 3. Insert members
   console.log("  Creating members...");
+
+  // Auto-link existing Clerk users by email so active dev sessions aren't unlinked
+  const clerkUsersByEmail = new Map<string, string>();
+  try {
+    if (process.env.CLERK_SECRET_KEY) {
+      const { clerkClient } = await import("@clerk/nextjs/server");
+      const client = await clerkClient();
+      const clerkUsers = await client.users.getUserList();
+      for (const u of clerkUsers.data) {
+        for (const e of u.emailAddresses) {
+          clerkUsersByEmail.set(e.emailAddress.toLowerCase(), u.id);
+        }
+      }
+    }
+  } catch {
+    // Non-blocking: if Clerk API is unreachable, seed still succeeds
+  }
+
   const insertedMembers = await db
     .insert(members)
     .values(
-      MEMBERS.map((m) => ({
-        circleId: circle.id,
-        displayName: m.displayName,
-        email: m.email,
-        role: m.role,
-        timezone: m.timezone,
-        language: m.language,
-      })),
+      MEMBERS.map((m) => {
+        const clerkUserId =
+          clerkUsersByEmail.get(m.email.toLowerCase()) ?? null;
+        return {
+          circleId: circle.id,
+          displayName: m.displayName,
+          email: m.email,
+          role: m.role,
+          timezone: m.timezone,
+          language: m.language,
+          clerkUserId,
+        };
+      }),
     )
     .returning();
 
   const memberByName = new Map(insertedMembers.map((m) => [m.displayName, m]));
 
   for (const m of insertedMembers) {
+    const linkedStr = m.clerkUserId ? ` · linked to ${m.clerkUserId}` : "";
     console.log(
-      `  ✓ ${m.displayName} (${m.timezone}, ${m.language}, ${m.role})`,
+      `  ✓ ${m.displayName} (${m.timezone}, ${m.language}, ${m.role}${linkedStr})`,
     );
   }
 
