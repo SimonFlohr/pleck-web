@@ -1,16 +1,27 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Camera, Loader2, Type } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import { MAX_TEXT_LENGTH } from "@/lib/media-types";
+import {
+  ALLOWED_TYPES,
+  MAX_SIZE_BYTES,
+  MAX_TEXT_LENGTH,
+} from "@/lib/media-types";
+import {
+  readExifDateTime,
+  sha256Hex,
+  uploadToS3,
+} from "@/lib/media/prepare-photo";
 import { postSpark } from "@/lib/sparks/client";
 
 type SparkKind = "text" | "photo";
+
+const PHOTO_ACCEPT = "image/jpeg,image/png,image/webp";
 
 export function Composer({ circleId }: { circleId: number }) {
   const router = useRouter();
@@ -18,9 +29,36 @@ export function Composer({ circleId }: { circleId: number }) {
   const [caption, setCaption] = useState("");
   const [status, setStatus] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [file, setFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const submitting = status !== null;
-  const canSubmit = kind === "text" ? caption.trim().length > 0 : false;
+  const canSubmit = kind === "text" ? caption.trim().length > 0 : file !== null;
+
+  function onPickFile(e: ChangeEvent<HTMLInputElement>) {
+    const picked = e.target.files?.[0] ?? null;
+    if (previewUrl) URL.revokeObjectURL(previewUrl); // free the old preview's memory
+    setError(null);
+
+    if (
+      picked &&
+      (!ALLOWED_TYPES[picked.type] || !picked.type.startsWith("image/"))
+    ) {
+      setError("That file type isn't supported. Try a JPEG, PNG, or WebP.");
+      setFile(null);
+      setPreviewUrl(null);
+      return;
+    }
+    if (picked && picked.size > MAX_SIZE_BYTES) {
+      setError("That photo is over 50 MB.");
+      setFile(null);
+      setPreviewUrl(null);
+      return;
+    }
+    setFile(picked);
+    setPreviewUrl(picked ? URL.createObjectURL(picked) : null);
+  }
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -30,6 +68,30 @@ export function Composer({ circleId }: { circleId: number }) {
       if (kind === "text") {
         setStatus("Posting…");
         await postSpark({ type: "text", textContent: caption });
+      }
+      if (kind === "photo" && file) {
+        setStatus("Preparing…");
+        const [sha256, exifDateTime] = await Promise.all([
+          sha256Hex(file),
+          readExifDateTime(file),
+        ]);
+
+        setStatus("Uploading…");
+        const key = await uploadToS3(file, circleId);
+
+        setStatus("Saving…");
+        await postSpark({
+          type: "photo",
+          textContent: caption.trim() || undefined,
+          exifDateTime,
+          media: {
+            key,
+            mime: file.type,
+            sizeBytes: file.size,
+            sha256,
+            originalFilename: file.name,
+          },
+        });
       }
       router.push("/");
       router.refresh();
@@ -66,7 +128,37 @@ export function Composer({ circleId }: { circleId: number }) {
           </TabsList>
         </Tabs>
 
-        {/* PLK-31: photo picker + preview renders here when kind === "photo" */}
+        {kind === "photo" && (
+          <div className="space-y-3">
+            <input
+              ref={inputRef}
+              type="file"
+              accept={PHOTO_ACCEPT}
+              onChange={onPickFile}
+              className="sr-only"
+              id="photo-input"
+              disabled={submitting}
+            />
+            {previewUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={previewUrl}
+                alt="Selected photo preview"
+                className="max-h-80 w-full rounded-xl border border-border/60 object-cover"
+              />
+            ) : null}
+            <Button
+              type="button"
+              variant="outline"
+              className="h-10 w-full cursor-pointer rounded-xl"
+              disabled={submitting}
+              onClick={() => inputRef.current?.click()}
+            >
+              <Camera className="size-4 shrink-0" />
+              {file ? "Choose a different photo" : "Take or choose a photo"}
+            </Button>
+          </div>
+        )}
 
         <div className="space-y-2">
           <div className="flex items-center justify-between">
