@@ -96,11 +96,12 @@ export const sparks = pgTable(
     deletedAt: timestamp("deleted_at", { withTimezone: true }),
   },
   (table) => [
-    index("sparks_feed_idx").on(
-      table.circleId,
-      table.authorLocalDate,
-      table.createdAt,
-      table.id,
+    index("sparks_feed_idx")
+      .on(table.circleId, table.authorLocalDate, table.createdAt, table.id)
+      .where(sql`${table.deletedAt} is null`),
+    index("sparks_text_trgm_idx").using(
+      "gin",
+      table.textContent.op("gin_trgm_ops"),
     ),
   ],
 );
