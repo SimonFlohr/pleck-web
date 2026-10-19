@@ -16,6 +16,13 @@ export function FeedList({ initialPage, reader, q }: Props) {
   const [cursor, setCursor] = useState(initialPage.nextCursor);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [prevInitialPage, setPrevInitialPage] = useState(initialPage);
+
+  if (initialPage !== prevInitialPage) {
+    setPrevInitialPage(initialPage);
+    setGroups(initialPage.groups);
+    setCursor(initialPage.nextCursor);
+  }
 
   async function loadMore() {
     if (!cursor) return;
