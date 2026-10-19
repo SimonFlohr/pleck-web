@@ -7,6 +7,7 @@ import { mergePages } from "@/lib/feed/groups";
 import type { FeedPage } from "@/lib/feed/types";
 import { formatDayHeader, type Reader } from "@/lib/format";
 import { SparkCard } from "./spark-card";
+import { EmptyState } from "./empty-state";
 
 type Props = { initialPage: FeedPage; reader: Reader; q: string };
 
@@ -35,13 +36,8 @@ export function FeedList({ initialPage, reader, q }: Props) {
     }
   }
 
-  if (groups.length === 0) {
-    return (
-      <div className="py-16 text-center">
-        <p className="text-sm text-muted-foreground">No sparks yet.</p>
-      </div>
-    );
-  }
+  if (groups.length === 0)
+    return <EmptyState q={q} language={reader.language} />;
 
   return (
     <div className="space-y-6 sm:space-y-8">
