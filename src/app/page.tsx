@@ -5,10 +5,17 @@ import { buttonVariants } from "@/components/ui/button";
 import { FeedList } from "@/components/feed/feed-list";
 import { getViewer } from "@/lib/auth/viewer";
 import { loadFeedPage } from "@/lib/feed/load";
+import { Suspense } from "react";
+import { SearchBar } from "@/components/feed/search-bar";
 
 type Props = {
   searchParams: Promise<{ q?: string | string[] }>;
 };
+
+const SEARCH_PLACEHOLDER = {
+  en: "Search sparks",
+  nl: "Zoek in sparks",
+} as const;
 
 export default async function FeedPage({ searchParams }: Props) {
   const viewer = await getViewer();
@@ -45,8 +52,9 @@ export default async function FeedPage({ searchParams }: Props) {
     <main className="mx-auto w-full max-w-xl sm:max-w-2xl px-3.5 sm:px-6 pb-24">
       <h1 className="sr-only">Pleck feed</h1>
       <div className="sticky top-0 z-10 -mx-3.5 mb-4 flex items-center justify-between gap-3 border-b border-border/40 bg-background/85 px-3.5 py-3 backdrop-blur-md sm:mx-0 sm:border-none sm:bg-background/90 sm:px-0">
-        {/* PLK-41: <SearchBar /> goes here */}
-        <div className="flex-1" />
+        <Suspense fallback={<div className="h-8 flex-1" />}>
+          <SearchBar placeholder={SEARCH_PLACEHOLDER[member.language]} />
+        </Suspense>
         <Link
           href="/compose"
           className={buttonVariants({
