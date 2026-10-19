@@ -36,6 +36,20 @@
       "when": 1791692250000,
       "tag": "0004_drop_clerk_user_id_not_null",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1792414524529,
+      "tag": "0005_enable_pg_trgm",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1792414667312,
+      "tag": "0006_woozy_cerebro",
+      "breakpoints": true
     }
   ]
 }
