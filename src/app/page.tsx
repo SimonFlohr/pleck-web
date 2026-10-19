@@ -7,6 +7,7 @@ import { getViewer } from "@/lib/auth/viewer";
 import { loadFeedPage } from "@/lib/feed/load";
 import { Suspense } from "react";
 import { SearchBar } from "@/components/feed/search-bar";
+import { PullToRefresh } from "@/components/feed/pull-to-refresh";
 
 type Props = {
   searchParams: Promise<{ q?: string | string[] }>;
@@ -51,25 +52,25 @@ export default async function FeedPage({ searchParams }: Props) {
   return (
     <main className="mx-auto w-full max-w-xl sm:max-w-2xl px-3.5 sm:px-6 pb-24">
       <h1 className="sr-only">Pleck feed</h1>
-      <div className="sticky top-0 z-10 -mx-3.5 mb-4 flex items-center justify-between gap-3 border-b border-border/40 bg-background/85 px-3.5 py-3 backdrop-blur-md sm:mx-0 sm:border-none sm:bg-background/90 sm:px-0">
-        <Suspense fallback={<div className="h-8 flex-1" />}>
-          <SearchBar placeholder={SEARCH_PLACEHOLDER[member.language]} />
-        </Suspense>
-        <Link
-          href="/compose"
-          className={buttonVariants({
-            size: "sm",
-            className:
-              "gap-1 rounded-full px-3 text-xs sm:text-sm font-medium shadow-2xs",
-          })}
-        >
-          <Plus className="size-3.5 sm:size-4" />
-          <span>New spark</span>
-        </Link>
-      </div>
-
-      {/* key={q} remounts the list when the search changes, resetting cursor + groups */}
-      <FeedList key={q} initialPage={firstPage} reader={reader} q={q} />
+      <PullToRefresh>
+        <div className="sticky top-0 z-10 -mx-3.5 mb-4 flex items-center justify-between gap-3 border-b border-border/40 bg-background/85 px-3.5 py-3 backdrop-blur-md sm:mx-0 sm:border-none sm:bg-background/90 sm:px-0">
+          <Suspense fallback={<div className="h-8 flex-1" />}>
+            <SearchBar placeholder={SEARCH_PLACEHOLDER[member.language]} />
+          </Suspense>
+          <Link
+            href="/compose"
+            className={buttonVariants({
+              size: "sm",
+              className:
+                "gap-1 rounded-full px-3 text-xs sm:text-sm font-medium shadow-2xs",
+            })}
+          >
+            <Plus className="size-3.5 sm:size-4" />
+            <span>New spark</span>
+          </Link>
+        </div>
+        <FeedList key={q} initialPage={firstPage} reader={reader} q={q} />
+      </PullToRefresh>
     </main>
   );
 }

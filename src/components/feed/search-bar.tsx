@@ -37,6 +37,7 @@ export function SearchBar({ placeholder }: { placeholder: string }) {
         value={value}
         onChange={(e) => setValue(e.target.value)}
         placeholder={placeholder}
+        autoCapitalize="none"
         aria-label={placeholder}
         className="pl-8"
         data-pending={isPending || undefined}
