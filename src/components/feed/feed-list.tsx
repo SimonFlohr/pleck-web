@@ -9,9 +9,14 @@ import { formatDayHeader, type Reader } from "@/lib/format";
 import { SparkCard } from "./spark-card";
 import { EmptyState } from "./empty-state";
 
-type Props = { initialPage: FeedPage; reader: Reader; q: string };
+type Props = {
+  initialPage: FeedPage;
+  reader: Reader;
+  currentMember: { id: number; role: "owner" | "member" };
+  q: string;
+};
 
-export function FeedList({ initialPage, reader, q }: Props) {
+export function FeedList({ initialPage, reader, currentMember, q }: Props) {
   const [groups, setGroups] = useState(initialPage.groups);
   const [cursor, setCursor] = useState(initialPage.nextCursor);
   const [loading, setLoading] = useState(false);
@@ -46,6 +51,17 @@ export function FeedList({ initialPage, reader, q }: Props) {
   if (groups.length === 0)
     return <EmptyState q={q} language={reader.language} />;
 
+  function handleDelete(sparkId: number) {
+    setGroups((prev) =>
+      prev
+        .map((group) => ({
+          ...group,
+          items: group.items.filter((item) => item.id !== sparkId),
+        }))
+        .filter((group) => group.items.length > 0),
+    );
+  }
+
   return (
     <div className="space-y-6 sm:space-y-8">
       {groups.map((group) => (
@@ -63,7 +79,13 @@ export function FeedList({ initialPage, reader, q }: Props) {
           </div>
           <div className="space-y-2.5 sm:space-y-3">
             {group.items.map((item) => (
-              <SparkCard key={item.id} item={item} reader={reader} />
+              <SparkCard
+                key={item.id}
+                item={item}
+                reader={reader}
+                currentMember={currentMember}
+                onDelete={handleDelete}
+              />
             ))}
           </div>
         </section>
