@@ -48,6 +48,7 @@ export default async function FeedPage({ searchParams }: Props) {
 
   const firstPage = await loadFeedPage(member.circleId, { q });
   const reader = { language: member.language, timezone: member.timezone };
+  const currentMember = { id: member.id, role: member.role };
 
   return (
     <main className="mx-auto w-full max-w-xl sm:max-w-2xl px-3.5 sm:px-6 pb-24">
@@ -69,7 +70,13 @@ export default async function FeedPage({ searchParams }: Props) {
             <span>New spark</span>
           </Link>
         </div>
-        <FeedList key={q} initialPage={firstPage} reader={reader} q={q} />
+        <FeedList
+          key={q}
+          initialPage={firstPage}
+          reader={reader}
+          currentMember={currentMember}
+          q={q}
+        />
       </PullToRefresh>
     </main>
   );

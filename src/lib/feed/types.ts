@@ -10,6 +10,7 @@ export type FeedItem = {
   id: number;
   type: SparkType;
   textContent: string | null;
+  authorMemberId: number;
   authorName: string;
   authorTimezone: string;
   authorLocalDate: string; // yyyy-MM-dd
