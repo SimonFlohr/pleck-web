@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
+import { EmojiPicker } from "./emoji-picker";
 import {
   ALLOWED_TYPES,
   MAX_SIZE_BYTES,
@@ -32,9 +33,33 @@ export function Composer({ circleId }: { circleId: number }) {
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const submitting = status !== null;
   const canSubmit = kind === "text" ? caption.trim().length > 0 : file !== null;
+
+  function handleSelectEmoji(emoji: string) {
+    const textarea = textareaRef.current;
+    if (!textarea) {
+      if (caption.length + emoji.length <= MAX_TEXT_LENGTH) {
+        setCaption((prev) => prev + emoji);
+      }
+      return;
+    }
+
+    const start = textarea.selectionStart ?? caption.length;
+    const end = textarea.selectionEnd ?? caption.length;
+    const newText = caption.slice(0, start) + emoji + caption.slice(end);
+
+    if (newText.length <= MAX_TEXT_LENGTH) {
+      setCaption(newText);
+      const nextCursor = start + emoji.length;
+      requestAnimationFrame(() => {
+        textarea.focus();
+        textarea.setSelectionRange(nextCursor, nextCursor);
+      });
+    }
+  }
 
   function onPickFile(e: ChangeEvent<HTMLInputElement>) {
     const picked = e.target.files?.[0] ?? null;
@@ -168,11 +193,18 @@ export function Composer({ circleId }: { circleId: number }) {
             >
               {kind === "text" ? "What happened?" : "Caption (optional)"}
             </Label>
-            <span className="text-[0.7rem] sm:text-xs tabular-nums text-muted-foreground/80">
-              {caption.length}/{MAX_TEXT_LENGTH}
-            </span>
+            <div className="flex items-center gap-1.5">
+              <EmojiPicker
+                onSelectEmoji={handleSelectEmoji}
+                disabled={submitting}
+              />
+              <span className="text-[0.7rem] sm:text-xs tabular-nums text-muted-foreground/80">
+                {caption.length}/{MAX_TEXT_LENGTH}
+              </span>
+            </div>
           </div>
           <Textarea
+            ref={textareaRef}
             id="caption"
             value={caption}
             onChange={(e) => setCaption(e.target.value)}

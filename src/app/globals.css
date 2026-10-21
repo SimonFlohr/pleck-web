@@ -129,3 +129,39 @@
     font-size: calc(1rem + 1pt);
   }
 }
+
+/* Pleck Emoji Picker refinement (PLK-75) */
+.pleck-emoji-picker {
+  --epr-font-family: var(--font-sans), system-ui, sans-serif;
+  --epr-emoji-size: 28px;
+  --epr-category-label-height: 28px;
+  --epr-category-label-padding: 0 10px;
+  --epr-header-padding: 10px 10px 6px 10px;
+  --epr-horizontal-padding: 10px;
+  --epr-search-input-height: 34px;
+  --epr-search-input-padding: 0 10px;
+  --epr-search-input-border-radius: 10px;
+  --epr-picker-border-color: transparent;
+}
+
+body .pleck-emoji-picker [data-epr-part="category-label"],
+body .pleck-emoji-picker .epr-category-label-appearance,
+body .pleck-emoji-picker .epr-emoji-category-label {
+  font-size: 0.85rem !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.01em !important;
+  color: var(--muted-foreground) !important;
+  font-family: var(--font-sans), system-ui, sans-serif !important;
+}
+
+body .pleck-emoji-picker [data-epr-part="emoji"],
+body .pleck-emoji-picker [data-epr-part="emoji"] * {
+  font-size: var(--epr-emoji-size, 28px) !important;
+}
+
+body .pleck-emoji-picker input,
+body .pleck-emoji-picker input::placeholder {
+  font-size: 0.85rem !important;
+  font-weight: 400 !important;
+  font-family: var(--font-sans), system-ui, sans-serif !important;
+}
