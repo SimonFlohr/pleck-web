@@ -39,15 +39,21 @@ export async function POST(req: Request) {
   }
 
   // 2. Only handle user.created and session.created
-  if (event.type !== "user.created" && event.type !== "session.created") {
+  if (
+    event.type !== "user.created" &&
+    event.type !== "session.created" &&
+    event.type !== "user.updated"
+  ) {
     return new Response("Ignored", { status: 200 });
   }
 
   let clerkUserId: string;
   let email: string | undefined;
+  let imageUrl: string | undefined;
 
-  if (event.type === "user.created") {
+  if (event.type === "user.created" || event.type === "user.updated") {
     clerkUserId = event.data.id;
+    imageUrl = event.data.image_url;
     const primaryEmail =
       event.data.email_addresses.find(
         (e) => e.id === event.data.primary_email_address_id,
@@ -74,6 +80,7 @@ export async function POST(req: Request) {
           (e) => e.id === event.data.user?.primary_email_address_id,
         ) ?? event.data.user.email_addresses[0];
       email = primaryEmail?.email_address.toLowerCase();
+      imageUrl = event.data.user.image_url;
     } else {
       const client = await clerkClient();
       const user = await client.users.getUser(clerkUserId);
@@ -81,6 +88,7 @@ export async function POST(req: Request) {
         user.emailAddresses.find((e) => e.id === user.primaryEmailAddressId) ??
         user.emailAddresses[0];
       email = primaryEmail?.emailAddress.toLowerCase();
+      imageUrl = user.imageUrl;
     }
   } else {
     return new Response("Ignored", { status: 200 });
@@ -113,7 +121,10 @@ export async function POST(req: Request) {
   if (byEmail) {
     await db
       .update(members)
-      .set({ clerkUserId: clerkUserId })
+      .set({
+        clerkUserId: clerkUserId,
+        ...(imageUrl ? { avatarUrl: imageUrl } : {}),
+      })
       .where(eq(members.id, byEmail.id));
 
     console.log(`Linked: ${byEmail.displayName} → ${clerkUserId}`);

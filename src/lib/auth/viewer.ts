@@ -1,4 +1,4 @@
-import { auth } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { members } from "@/lib/db/schema";
@@ -20,7 +20,19 @@ export async function getViewer(): Promise<Viewer> {
     .where(eq(members.clerkUserId, userId))
     .limit(1);
 
-  return member
-    ? { status: "member", member }
-    : { status: "no-circle", clerkUserId: userId };
+  if (!member) {
+    return { status: "no-circle", clerkUserId: userId };
+  }
+
+  // Transparently sync profile picture from Clerk if changed or missing
+  const clerkUser = await currentUser();
+  if (clerkUser?.imageUrl && member.avatarUrl !== clerkUser.imageUrl) {
+    await db
+      .update(members)
+      .set({ avatarUrl: clerkUser.imageUrl })
+      .where(eq(members.id, member.id));
+    member.avatarUrl = clerkUser.imageUrl;
+  }
+
+  return { status: "member", member };
 }

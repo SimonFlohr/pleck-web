@@ -12,6 +12,7 @@ export type FeedItem = {
   textContent: string | null;
   authorMemberId: number;
   authorName: string;
+  authorAvatarUrl: string | null;
   authorTimezone: string;
   authorLocalDate: string; // yyyy-MM-dd
   createdAt: string; // ISO 8601 UTC. A string so it survives JSON.
