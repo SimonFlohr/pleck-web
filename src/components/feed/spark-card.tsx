@@ -113,7 +113,8 @@ export function SparkCard({
             src={item.mediaUrl}
             alt={item.textContent ?? `Photo by ${item.authorName}`}
             loading="lazy"
-            className="mb-2 w-full max-h-[520px] rounded-lg object-cover"
+            decoding="async"
+            className="mb-2 w-full max-h-[520px] rounded-lg object-cover bg-muted/40"
           />
         ) : (
           <div className="mb-2 flex aspect-video sm:aspect-16/10 flex-col items-center justify-center gap-1.5 rounded-lg border border-dashed border-border/70 bg-muted/30 p-4 text-center text-xs text-muted-foreground">

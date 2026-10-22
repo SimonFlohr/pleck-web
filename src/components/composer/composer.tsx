@@ -14,6 +14,7 @@ import {
   MAX_TEXT_LENGTH,
 } from "@/lib/media-types";
 import {
+  optimizePhoto,
   readExifDateTime,
   sha256Hex,
   uploadToS3,
@@ -96,13 +97,14 @@ export function Composer({ circleId }: { circleId: number }) {
       }
       if (kind === "photo" && file) {
         setStatus("Preparing…");
-        const [sha256, exifDateTime] = await Promise.all([
-          sha256Hex(file),
-          readExifDateTime(file),
+        const [exifDateTime, uploadFile] = await Promise.all([
+          readExifDateTime(file), // Read EXIF from original before canvas strips it
+          optimizePhoto(file),
         ]);
+        const sha256 = await sha256Hex(uploadFile);
 
         setStatus("Uploading…");
-        const key = await uploadToS3(file, circleId);
+        const key = await uploadToS3(uploadFile, circleId);
 
         setStatus("Saving…");
         await postSpark({
@@ -111,8 +113,8 @@ export function Composer({ circleId }: { circleId: number }) {
           exifDateTime,
           media: {
             key,
-            mime: file.type,
-            sizeBytes: file.size,
+            mime: uploadFile.type,
+            sizeBytes: uploadFile.size,
             sha256,
             originalFilename: file.name,
           },
