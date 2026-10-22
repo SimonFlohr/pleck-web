@@ -51,6 +51,7 @@ export function EmojiPicker({ onSelectEmoji, disabled }: Props) {
                 "--epr-search-input-padding": "0 10px",
                 "--epr-search-input-border-radius": "10px",
                 "--epr-picker-border-color": "transparent",
+                "--epr-bg-color": "transparent",
               } as React.CSSProperties
             }
             className="pleck-emoji-picker z-50 overflow-hidden rounded-md border border-border/80 bg-card shadow-xl focus:outline-none w-[306px] max-w-[calc(100vw-2rem)]"
@@ -83,7 +84,7 @@ export function EmojiPicker({ onSelectEmoji, disabled }: Props) {
               }}
               autoFocusSearch={false}
               emojiStyle={EmojiStyle.NATIVE}
-              theme={Theme.LIGHT}
+              theme={Theme.AUTO}
               width="100%"
               height={342}
               lazyLoadEmojis
