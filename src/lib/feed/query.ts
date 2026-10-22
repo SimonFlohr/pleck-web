@@ -50,6 +50,7 @@ export async function getFeedPage(
       textContent: sparks.textContent,
       authorMemberId: sparks.authorMemberId,
       authorName: members.displayName,
+      authorAvatarUrl: members.avatarUrl,
       authorTimezone: sparks.authorTimezone,
       authorLocalDate: sparks.authorLocalDate,
       createdAt: sparks.createdAt,

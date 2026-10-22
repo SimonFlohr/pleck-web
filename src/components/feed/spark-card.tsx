@@ -37,10 +37,24 @@ export function SparkCard({
 
   return (
     <article className="rounded-xl border border-border/70 bg-card p-3.5 sm:p-4 shadow-[0_1px_2px_0_rgba(0,0,0,0.02)] transition-colors hover:border-border">
-      <header className="mb-2 flex items-baseline justify-between gap-2 text-xs sm:text-sm">
-        <span className="font-medium tracking-tight text-foreground/90">
-          {item.authorName}
-        </span>
+      <header className="mb-2 flex items-center justify-between gap-2 text-xs sm:text-sm">
+        <div className="flex items-center gap-2 min-w-0">
+          {item.authorAvatarUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={item.authorAvatarUrl}
+              alt=""
+              className="size-5 sm:size-6 rounded-full object-cover shrink-0 border border-border/40"
+            />
+          ) : (
+            <div className="flex size-5 sm:size-6 items-center justify-center rounded-full bg-muted border border-border/40 text-[0.6rem] sm:text-[0.65rem] font-medium text-muted-foreground uppercase shrink-0">
+              {item.authorName.charAt(0)}
+            </div>
+          )}
+          <span className="font-bold tracking-tight text-foreground/90 truncate">
+            {item.authorName}
+          </span>
+        </div>
         <div className="flex items-center gap-2">
           <time
             dateTime={item.createdAt}

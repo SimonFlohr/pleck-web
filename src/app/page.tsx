@@ -8,6 +8,7 @@ import { loadFeedPage } from "@/lib/feed/load";
 import { Suspense } from "react";
 import { SearchBar } from "@/components/feed/search-bar";
 import { PullToRefresh } from "@/components/feed/pull-to-refresh";
+import { ScrollToTop } from "@/components/feed/scroll-to-top";
 
 type Props = {
   searchParams: Promise<{ q?: string | string[] }>;
@@ -78,6 +79,7 @@ export default async function FeedPage({ searchParams }: Props) {
           q={q}
         />
       </PullToRefresh>
+      <ScrollToTop />
     </main>
   );
 }

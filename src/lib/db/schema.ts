@@ -53,6 +53,7 @@ export const members = pgTable("members", {
     .notNull()
     .references(() => familyCircles.id, { onDelete: "cascade" }),
   clerkUserId: text("clerk_user_id"),
+  avatarUrl: text("avatar_url"),
   displayName: text("display_name").notNull(),
   email: text("email").notNull(),
   role: memberRoleEnum("role").notNull().default("member"),
