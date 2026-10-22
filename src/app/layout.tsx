@@ -1,4 +1,5 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
+import Link from "next/link";
 import {
   ClerkProvider,
   Show,
@@ -26,6 +27,10 @@ export const metadata: Metadata = {
   description: "Your family's private archive of everyday moments.",
 };
 
+export const viewport: Viewport = {
+  colorScheme: "light dark",
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -36,20 +41,32 @@ export default function RootLayout({
       lang="en"
       className={`${roboto.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-full flex flex-col bg-background text-foreground transition-colors">
         <ClerkProvider appearance={{ theme: shadcn }}>
-          <header className="flex justify-end items-center p-4 gap-4 h-16">
-            <Show when="signed-out">
-              <SignInButton />
-              <SignUpButton>
-                <button className="bg-purple-700 text-white rounded-full font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 cursor-pointer">
-                  Sign Up
-                </button>
-              </SignUpButton>
-            </Show>
-            <Show when="signed-in">
-              <UserButton />
-            </Show>
+          <header className="mx-auto flex h-16 w-full items-center justify-between px-3.5 sm:px-6">
+            <Link
+              href="/"
+              className="text-lg font-semibold tracking-tight text-foreground transition-opacity hover:opacity-80"
+            >
+              <i>Pleck</i>
+            </Link>
+            <div className="flex items-center gap-3">
+              <Show when="signed-out">
+                <SignInButton>
+                  <button className="text-xs sm:text-sm font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
+                    Sign In
+                  </button>
+                </SignInButton>
+                <SignUpButton>
+                  <button className="rounded-full bg-primary px-3.5 sm:px-4 py-1.5 text-xs sm:text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors cursor-pointer">
+                    Sign Up
+                  </button>
+                </SignUpButton>
+              </Show>
+              <Show when="signed-in">
+                <UserButton />
+              </Show>
+            </div>
           </header>
           {children}
         </ClerkProvider>
