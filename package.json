@@ -10,7 +10,8 @@
     "prepare": "husky",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
-    "db:seed": "tsx src/lib/db/seed.ts"
+    "db:seed": "tsx src/lib/db/seed.ts",
+    "db:init-prod": "tsx src/lib/db/init-family.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1150.0",
