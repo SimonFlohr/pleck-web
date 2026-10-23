@@ -62,11 +62,29 @@ export async function uploadToS3(
   return key;
 }
 
+let cachedWebPSupport: boolean | null = null;
+
+function supportsWebPExport(): boolean {
+  if (typeof document === "undefined") return false;
+  if (cachedWebPSupport !== null) return cachedWebPSupport;
+  try {
+    const canvas = document.createElement("canvas");
+    canvas.width = 1;
+    canvas.height = 1;
+    cachedWebPSupport = canvas
+      .toDataURL("image/webp")
+      .startsWith("data:image/webp");
+  } catch {
+    cachedWebPSupport = false;
+  }
+  return cachedWebPSupport;
+}
+
 /**
  * Downscales and compresses a photo on the client before upload.
  * - Caps max width/height to 1600px.
- * - Encodes to modern WebP (with fallback to JPEG).
- * - Reduces a photo upload size by 98%.
+ * - Encodes to modern WebP (with fallback to JPEG on Safari).
+ * - Reduces photo upload size by up to 98%.
  */
 export async function optimizePhoto(
   file: File,
@@ -88,7 +106,8 @@ export async function optimizePhoto(
 
     img.onload = () => {
       URL.revokeObjectURL(objectUrl);
-      let { width, height } = img;
+      let width = img.naturalWidth || img.width;
+      let height = img.naturalHeight || img.height;
 
       // Scale down while maintaining aspect ratio
       if (width > maxDimension || height > maxDimension) {
@@ -113,10 +132,21 @@ export async function optimizePhoto(
 
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = "high";
+
+      // Detect if browser canvas can encode WebP (Chrome/Firefox/Android = Yes, Safari = No)
+      const canWebP = supportsWebPExport();
+      const outputType = canWebP ? "image/webp" : "image/jpeg";
+      const extension = canWebP ? "webp" : "jpg";
+      const outputQuality = canWebP ? quality : 0.8;
+
+      // When falling back to JPEG on Safari, fill transparent background with white
+      if (outputType === "image/jpeg") {
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, width, height);
+      }
+
       ctx.drawImage(img, 0, 0, width, height);
 
-      // Attempt WebP encoding first, fallback to original if unsupported/larger
-      const outputType = "image/webp";
       canvas.toBlob(
         (blob) => {
           if (!blob || blob.size >= file.size) {
@@ -125,14 +155,14 @@ export async function optimizePhoto(
           }
 
           const baseName = file.name.replace(/\.[^/.]+$/, "");
-          const optimizedFile = new File([blob], `${baseName}.webp`, {
+          const optimizedFile = new File([blob], `${baseName}.${extension}`, {
             type: outputType,
             lastModified: file.lastModified,
           });
           resolve(optimizedFile);
         },
         outputType,
-        quality,
+        outputQuality,
       );
     };
 
