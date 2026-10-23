@@ -16,7 +16,7 @@ export const s3 = new S3Client({
   },
 });
 
-export const BUCKET = process.env.AWS_S3_BUCKET_NAME ?? "pleck-media-prod-use2";
+export const BUCKET = process.env.AWS_S3_BUCKET_NAME ?? "pleck-media-dev-use2";
 
 export const PRESIGN_GET_TTL_SECONDS = 15 * 60; // 15 minutes
 

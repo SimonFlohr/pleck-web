@@ -14,18 +14,53 @@ export async function getViewer(): Promise<Viewer> {
   const { userId } = await auth();
   if (!userId) return { status: "signed-out" };
 
-  const [member] = await db
+  let [member] = await db
     .select()
     .from(members)
     .where(eq(members.clerkUserId, userId))
     .limit(1);
+
+  const clerkUser = await currentUser();
+
+  // If not linked by clerkUserId yet, auto-link by verified email on sign-in
+  if (!member && clerkUser) {
+    const primaryEmail =
+      clerkUser.emailAddresses.find(
+        (e) => e.id === clerkUser.primaryEmailAddressId,
+      ) ?? clerkUser.emailAddresses[0];
+    const userEmail = primaryEmail?.emailAddress.toLowerCase();
+
+    if (userEmail) {
+      const [byEmail] = await db
+        .select()
+        .from(members)
+        .where(eq(members.email, userEmail))
+        .limit(1);
+
+      if (byEmail) {
+        const avatarUrl = clerkUser.imageUrl ?? byEmail.avatarUrl;
+        await db
+          .update(members)
+          .set({
+            clerkUserId: userId,
+            ...(clerkUser.imageUrl ? { avatarUrl: clerkUser.imageUrl } : {}),
+          })
+          .where(eq(members.id, byEmail.id));
+
+        member = {
+          ...byEmail,
+          clerkUserId: userId,
+          avatarUrl,
+        };
+      }
+    }
+  }
 
   if (!member) {
     return { status: "no-circle", clerkUserId: userId };
   }
 
   // Transparently sync profile picture from Clerk if changed or missing
-  const clerkUser = await currentUser();
   if (clerkUser?.imageUrl && member.avatarUrl !== clerkUser.imageUrl) {
     await db
       .update(members)

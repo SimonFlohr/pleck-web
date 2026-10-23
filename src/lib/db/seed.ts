@@ -1,5 +1,6 @@
 import { neon } from "@neondatabase/serverless";
 import { drizzle } from "drizzle-orm/neon-http";
+import { eq } from "drizzle-orm";
 import { config } from "dotenv";
 import { randomUUID } from "crypto";
 import { familyCircles, members, sparks } from "./schema";
@@ -347,6 +348,65 @@ const SPARK_DEFS: SparkDef[] = [
 // ══════════════════════════════════════════════
 
 async function seed() {
+  // 🚨 SAFETY CIRCUIT BREAKER (Tier 1): Endpoint & Environment Sniffing
+  const dbUrl = process.env.DATABASE_URL ?? "";
+  const PROD_ENDPOINT_MARKERS = [
+    "ep-polished-darkness",
+    "production",
+    "prod",
+    "pleck_prod",
+  ];
+
+  const isProdEndpoint = PROD_ENDPOINT_MARKERS.some((marker) =>
+    dbUrl.toLowerCase().includes(marker),
+  );
+  const isProdEnv =
+    process.env.NODE_ENV === "production" ||
+    process.env.VERCEL_ENV === "production";
+
+  if ((isProdEndpoint || isProdEnv) && process.env.FORCE_DEV_SEED !== "true") {
+    console.error("\n❌ FATAL: SEED SCRIPT ABORTED!");
+    console.error(
+      "Detected production database connection (ep-polished-darkness / production).",
+    );
+    console.error("This script completely wipes all sparks and member tables.");
+    console.error(
+      "To prevent catastrophic family data loss, execution was halted.\n",
+    );
+    process.exit(1);
+  }
+
+  // 🚨 SAFETY CIRCUIT BREAKER (Tier 2): Pre-deletion Database Content Inspection
+  try {
+    const [prodCircle] = await db
+      .select()
+      .from(familyCircles)
+      .where(eq(familyCircles.name, "Flohr"))
+      .limit(1);
+
+    const [prodOwner] = await db
+      .select()
+      .from(members)
+      .where(eq(members.email, "simonflohr22@gmail.com"))
+      .limit(1);
+
+    if (prodCircle || prodOwner) {
+      console.error("\n❌ FATAL: SEED SCRIPT ABORTED!");
+      console.error(
+        "Found real family circle 'Flohr' or owner 'simonflohr22@gmail.com' in this database!",
+      );
+      console.error(
+        "seed.ts is strictly forbidden from running against real family vaults.",
+      );
+      console.error(
+        "Execution halted immediately before deleting any records.\n",
+      );
+      process.exit(1);
+    }
+  } catch {
+    // Non-blocking if tables are not yet created
+  }
+
   console.log("🌱 Seeding database...\n");
 
   // 1. Clear existing data (reverse FK order)
