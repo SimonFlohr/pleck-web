@@ -2,7 +2,7 @@
 
 import { useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { Camera, Loader2, Type } from "lucide-react";
+import { Camera, ImageIcon, Loader2, Type, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -33,7 +33,8 @@ export function Composer({ circleId }: { circleId: number }) {
   const [error, setError] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
+  const galleryInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const submitting = status !== null;
@@ -64,6 +65,7 @@ export function Composer({ circleId }: { circleId: number }) {
 
   function onPickFile(e: ChangeEvent<HTMLInputElement>) {
     const picked = e.target.files?.[0] ?? null;
+    e.target.value = "";
     if (previewUrl) URL.revokeObjectURL(previewUrl); // free the old preview's memory
     setError(null);
 
@@ -84,6 +86,15 @@ export function Composer({ circleId }: { circleId: number }) {
     }
     setFile(picked);
     setPreviewUrl(picked ? URL.createObjectURL(picked) : null);
+  }
+
+  function handleClearPhoto() {
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    setFile(null);
+    setPreviewUrl(null);
+    setError(null);
+    if (cameraInputRef.current) cameraInputRef.current.value = "";
+    if (galleryInputRef.current) galleryInputRef.current.value = "";
   }
 
   async function handleSubmit(e: FormEvent) {
@@ -158,32 +169,91 @@ export function Composer({ circleId }: { circleId: number }) {
         {kind === "photo" && (
           <div className="space-y-3">
             <input
-              ref={inputRef}
+              ref={cameraInputRef}
+              type="file"
+              accept="image/*"
+              capture="environment"
+              onChange={onPickFile}
+              className="sr-only"
+              id="camera-input"
+              disabled={submitting}
+            />
+            <input
+              ref={galleryInputRef}
               type="file"
               accept={PHOTO_ACCEPT}
               onChange={onPickFile}
               className="sr-only"
-              id="photo-input"
+              id="gallery-input"
               disabled={submitting}
             />
+
             {previewUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={previewUrl}
-                alt="Selected photo preview"
-                className="max-h-80 w-full rounded-xl border border-border/60 object-cover"
-              />
-            ) : null}
-            <Button
-              type="button"
-              variant="outline"
-              className="h-10 w-full cursor-pointer rounded-xl"
-              disabled={submitting}
-              onClick={() => inputRef.current?.click()}
-            >
-              <Camera className="size-4 shrink-0" />
-              {file ? "Choose a different photo" : "Take or choose a photo"}
-            </Button>
+              <div className="space-y-2.5">
+                <div className="relative overflow-hidden rounded-xl border border-border/60">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={previewUrl}
+                    alt="Selected photo preview"
+                    className="max-h-80 w-full object-cover"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleClearPhoto}
+                    disabled={submitting}
+                    className="absolute top-2.5 right-2.5 size-7 rounded-full bg-background/80 shadow-xs backdrop-blur-md flex items-center justify-center text-foreground/80 hover:text-foreground hover:bg-background cursor-pointer transition-colors"
+                    aria-label="Remove photo"
+                  >
+                    <X className="size-3.5" />
+                  </button>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="h-9 cursor-pointer rounded-xl flex items-center justify-center gap-1.5 text-xs font-medium border-border/80 hover:bg-accent/50"
+                    disabled={submitting}
+                    onClick={() => cameraInputRef.current?.click()}
+                  >
+                    <Camera className="size-3.5 shrink-0" />
+                    <span>Retake</span>
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="h-9 cursor-pointer rounded-xl flex items-center justify-center gap-1.5 text-xs font-medium border-border/80 hover:bg-accent/50"
+                    disabled={submitting}
+                    onClick={() => galleryInputRef.current?.click()}
+                  >
+                    <ImageIcon className="size-3.5 shrink-0" />
+                    <span>Choose other</span>
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 gap-2.5">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="h-11 cursor-pointer rounded-xl flex items-center justify-center gap-2 text-xs sm:text-sm font-medium border-border/80 hover:bg-accent/50"
+                  disabled={submitting}
+                  onClick={() => cameraInputRef.current?.click()}
+                >
+                  <Camera className="size-4 shrink-0 text-primary" />
+                  <span>Take photo</span>
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="h-11 cursor-pointer rounded-xl flex items-center justify-center gap-2 text-xs sm:text-sm font-medium border-border/80 hover:bg-accent/50"
+                  disabled={submitting}
+                  onClick={() => galleryInputRef.current?.click()}
+                >
+                  <ImageIcon className="size-4 shrink-0 text-muted-foreground" />
+                  <span>Photo library</span>
+                </Button>
+              </div>
+            )}
           </div>
         )}
 
