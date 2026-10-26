@@ -36,7 +36,7 @@ export function SparkCard({
   }
 
   return (
-    <article className="rounded-xl border border-border/70 bg-card p-3.5 sm:p-4 shadow-[0_1px_2px_0_rgba(0,0,0,0.02)] transition-colors hover:border-border">
+    <article className="rounded-xl border border-border/90 bg-card/20 backdrop-blur-xl p-3.5 sm:p-4 shadow-[0_10px_15px_-10px_rgba(0,0,0,0.2)] transition-colors hover:border-primary/45">
       <header className="mb-2 flex items-center justify-between gap-2 text-xs sm:text-sm">
         <div className="flex items-center gap-2 min-w-0">
           {item.authorAvatarUrl ? (
