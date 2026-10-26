@@ -165,10 +165,21 @@
   box-shadow: none !important;
 }
 
-.cl-modalContent .cl-navbar,
-.cl-modalContent .cl-navbarMobileMenuRow {
+.cl-modalContent .cl-navbar {
   background: transparent !important;
   border-right: 1px solid color-mix(in srgb, var(--border) 50%, transparent);
+}
+
+.cl-modalContent .cl-navbar[tabindex="0"] {
+  background: color-mix(in srgb, var(--card) 94%, var(--background)) !important;
+  @apply backdrop-blur-xl;
+}
+
+.cl-modalContent .cl-navbarMobileMenuRow {
+  background: color-mix(in srgb, var(--card) 94%, var(--background)) !important;
+  border-right: none;
+  position: relative;
+  z-index: 2;
 }
 
 .cl-modalContent .cl-footer {
