@@ -24,7 +24,7 @@ export function SearchBar({ placeholder }: { placeholder: string }) {
       startTransition(() => {
         router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
       });
-    }, 300); // debounce: wait for a pause in typing
+    }, 300);
 
     return () => clearTimeout(timer);
   }, [value, searchParams, pathname, router]);
@@ -39,7 +39,7 @@ export function SearchBar({ placeholder }: { placeholder: string }) {
         placeholder={placeholder}
         autoCapitalize="none"
         aria-label={placeholder}
-        className="pl-8"
+        className="border-border bg-background pl-8"
         data-pending={isPending || undefined}
       />
     </div>

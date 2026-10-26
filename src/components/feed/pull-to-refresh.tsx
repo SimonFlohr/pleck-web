@@ -95,7 +95,6 @@ export function PullToRefresh({ children, onRefresh }: Props) {
 
   return (
     <div className="relative">
-      {/* Pull drawer that opens in natural layout flow — locks spinner & page together 1:1 */}
       <div
         style={{
           height: pullY > 0 ? `${pullY}px` : 0,
@@ -111,7 +110,7 @@ export function PullToRefresh({ children, onRefresh }: Props) {
             opacity: Math.min(pullY / 24, 1),
             transform: `scale(${Math.min(0.6 + progress * 0.4, 1)})`,
           }}
-          className="flex size-9 items-center justify-center rounded-full border border-border/80 bg-background shadow-xs"
+          className="flex size-9 items-center justify-center rounded-full border border-primary/35 bg-card shadow-sm"
         >
           <Loader2
             className={`size-4 text-primary transition-transform ${refreshing ? "animate-spin" : ""}`}

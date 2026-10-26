@@ -41,7 +41,7 @@ export function ScrollToTop() {
       type="button"
       onClick={handleScrollTopAndRefresh}
       aria-label="Scroll to top and refresh feed"
-      className={`fixed bottom-4 right-4 sm:right-4 z-40 flex size-10 sm:size-11 items-center justify-center rounded-full border border-border/80 bg-background/90 text-foreground shadow-lg backdrop-blur-md transition-all duration-200 hover:bg-muted hover:border-border active:scale-95 cursor-pointer ${
+      className={`fixed bottom-4 right-4 sm:right-4 z-40 flex size-10 sm:size-11 items-center justify-center rounded-full border border-border/80 bg-card/90 text-foreground shadow-lg backdrop-blur-md transition-all duration-200 hover:bg-muted hover:border-primary/50 active:scale-95 cursor-pointer ${
         visible
           ? "opacity-100 translate-y-0 pointer-events-auto"
           : "opacity-0 translate-y-3 pointer-events-none"

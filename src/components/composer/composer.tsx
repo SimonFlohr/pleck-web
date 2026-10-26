@@ -25,6 +25,9 @@ type SparkKind = "text" | "photo";
 
 const PHOTO_ACCEPT = "image/jpeg,image/png,image/webp";
 
+const photoActionClass =
+  "cursor-pointer rounded-xl border-border/50 bg-background/40 text-foreground shadow-none hover:border-border/80 hover:bg-background/55";
+
 export function Composer({ circleId }: { circleId: number }) {
   const router = useRouter();
   const [kind, setKind] = useState<SparkKind>("text");
@@ -66,7 +69,7 @@ export function Composer({ circleId }: { circleId: number }) {
   function onPickFile(e: ChangeEvent<HTMLInputElement>) {
     const picked = e.target.files?.[0] ?? null;
     e.target.value = "";
-    if (previewUrl) URL.revokeObjectURL(previewUrl); // free the old preview's memory
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
     setError(null);
 
     if (
@@ -141,24 +144,23 @@ export function Composer({ circleId }: { circleId: number }) {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      <div className="rounded-2xl border border-border/70 bg-card p-4 sm:p-6 shadow-[0_1px_3px_0_rgba(0,0,0,0.02)] space-y-4">
-        {/* Segmented control type switch */}
+      <div className="rounded-2xl border border-border/90 bg-card/20 backdrop-blur-xl p-4 sm:p-6 shadow-[0_10px_15px_-10px_rgba(0,0,0,0.2)] space-y-4">
         <Tabs
           value={kind}
           onValueChange={(v) => setKind(v as SparkKind)}
           className="w-full"
         >
-          <TabsList className="grid w-full grid-cols-2 p-1 bg-muted/80 rounded-xl border border-border/40 group-data-horizontal/tabs:h-auto h-auto">
+          <TabsList className="grid w-full grid-cols-2 p-1 bg-background/40 rounded-xl border border-border/50 group-data-horizontal/tabs:h-auto h-auto">
             <TabsTrigger
               value="text"
-              className="h-auto py-1.5 px-3 flex items-center justify-center gap-2 rounded-lg text-xs sm:text-sm font-medium transition-all cursor-pointer data-active:bg-background data-active:text-foreground data-active:shadow-xs"
+              className="h-auto py-1.5 px-3 flex items-center justify-center gap-2 rounded-lg text-xs sm:text-sm font-medium transition-all cursor-pointer data-active:bg-card/20 data-active:text-foreground data-active:shadow-sm"
             >
               <Type className="size-4 shrink-0" />
               <span className="leading-none">Text</span>
             </TabsTrigger>
             <TabsTrigger
               value="photo"
-              className="h-auto py-1.5 px-3 flex items-center justify-center gap-2 rounded-lg text-xs sm:text-sm font-medium transition-all cursor-pointer data-active:bg-background data-active:text-foreground data-active:shadow-xs"
+              className="h-auto py-1.5 px-3 flex items-center justify-center gap-2 rounded-lg text-xs sm:text-sm font-medium transition-all cursor-pointer data-active:bg-card/20 data-active:text-foreground data-active:shadow-sm"
             >
               <Camera className="size-4 shrink-0" />
               <span className="leading-none">Photo</span>
@@ -211,7 +213,7 @@ export function Composer({ circleId }: { circleId: number }) {
                   <Button
                     type="button"
                     variant="outline"
-                    className="h-9 cursor-pointer rounded-xl flex items-center justify-center gap-1.5 text-xs font-medium border-border/80 hover:bg-accent/50"
+                    className={`${photoActionClass} h-9 gap-1.5 text-xs`}
                     disabled={submitting}
                     onClick={() => cameraInputRef.current?.click()}
                   >
@@ -221,7 +223,7 @@ export function Composer({ circleId }: { circleId: number }) {
                   <Button
                     type="button"
                     variant="outline"
-                    className="h-9 cursor-pointer rounded-xl flex items-center justify-center gap-1.5 text-xs font-medium border-border/80 hover:bg-accent/50"
+                    className={`${photoActionClass} h-9 gap-1.5 text-xs`}
                     disabled={submitting}
                     onClick={() => galleryInputRef.current?.click()}
                   >
@@ -235,21 +237,21 @@ export function Composer({ circleId }: { circleId: number }) {
                 <Button
                   type="button"
                   variant="outline"
-                  className="h-11 cursor-pointer rounded-xl flex items-center justify-center gap-2 text-xs sm:text-sm font-medium border-border/80 hover:bg-accent/50"
+                  className={`${photoActionClass} h-11 gap-2 text-xs sm:text-sm`}
                   disabled={submitting}
                   onClick={() => cameraInputRef.current?.click()}
                 >
-                  <Camera className="size-4 shrink-0 text-primary" />
+                  <Camera className="size-4 shrink-0" />
                   <span>Take photo</span>
                 </Button>
                 <Button
                   type="button"
                   variant="outline"
-                  className="h-11 cursor-pointer rounded-xl flex items-center justify-center gap-2 text-xs sm:text-sm font-medium border-border/80 hover:bg-accent/50"
+                  className={`${photoActionClass} h-11 gap-2 text-xs sm:text-sm`}
                   disabled={submitting}
                   onClick={() => galleryInputRef.current?.click()}
                 >
-                  <ImageIcon className="size-4 shrink-0 text-muted-foreground" />
+                  <ImageIcon className="size-4 shrink-0" />
                   <span>Photo library</span>
                 </Button>
               </div>
@@ -307,7 +309,6 @@ export function Composer({ circleId }: { circleId: number }) {
         )}
       </div>
 
-      {/* Sticky bottom bar on mobile, in-flow on desktop */}
       <div className="sticky bottom-0 -mx-4 -mb-6 mt-2 border-t border-border/50 bg-background/90 px-4 py-3 backdrop-blur-md sm:static sm:mx-0 sm:mb-0 sm:border-0 sm:bg-transparent sm:p-0">
         <Button
           type="submit"

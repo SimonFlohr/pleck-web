@@ -3,11 +3,27 @@
 @import "shadcn/tailwind.css";
 @import "@clerk/ui/themes/shadcn.css";
 
-@custom-variant dark (&:is(.dark *), @media (prefers-color-scheme: dark));
+@custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --font-heading: var(--font-sans);
   --font-sans: var(--font-sans);
+  --color-nord-0: var(--nord0);
+  --color-nord-1: var(--nord1);
+  --color-nord-2: var(--nord2);
+  --color-nord-3: var(--nord3);
+  --color-nord-4: var(--nord4);
+  --color-nord-5: var(--nord5);
+  --color-nord-6: var(--nord6);
+  --color-nord-7: var(--nord7);
+  --color-nord-8: var(--nord8);
+  --color-nord-9: var(--nord9);
+  --color-nord-10: var(--nord10);
+  --color-nord-11: var(--nord11);
+  --color-nord-12: var(--nord12);
+  --color-nord-13: var(--nord13);
+  --color-nord-14: var(--nord14);
+  --color-nord-15: var(--nord15);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -49,124 +65,203 @@
 }
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
-}
+  color-scheme: dark;
 
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
-}
+  --nord0: #2e3440;
+  --nord1: #3b4252;
+  --nord2: #434c5e;
+  --nord3: #4c566a;
+  --nord4: #d8dee9;
+  --nord5: #e5e9f0;
+  --nord6: #eceff4;
+  --nord7: #8fbcbb;
+  --nord8: #88c0d0;
+  --nord9: #81a1c1;
+  --nord10: #5e81ac;
+  --nord11: #bf616a;
+  --nord12: #d08770;
+  --nord13: #ebcb8b;
+  --nord14: #a3be8c;
+  --nord15: #b48ead;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: oklch(0.145 0 0);
-    --foreground: oklch(0.985 0 0);
-    --card: oklch(0.205 0 0);
-    --card-foreground: oklch(0.985 0 0);
-    --popover: oklch(0.205 0 0);
-    --popover-foreground: oklch(0.985 0 0);
-    --primary: oklch(0.922 0 0);
-    --primary-foreground: oklch(0.205 0 0);
-    --secondary: oklch(0.269 0 0);
-    --secondary-foreground: oklch(0.985 0 0);
-    --muted: oklch(0.269 0 0);
-    --muted-foreground: oklch(0.708 0 0);
-    --accent: oklch(0.269 0 0);
-    --accent-foreground: oklch(0.985 0 0);
-    --destructive: oklch(0.704 0.191 22.216);
-    --border: oklch(1 0 0 / 10%);
-    --input: oklch(1 0 0 / 15%);
-    --ring: oklch(0.556 0 0);
-    --chart-1: oklch(0.87 0 0);
-    --chart-2: oklch(0.556 0 0);
-    --chart-3: oklch(0.439 0 0);
-    --chart-4: oklch(0.371 0 0);
-    --chart-5: oklch(0.269 0 0);
-    --sidebar: oklch(0.205 0 0);
-    --sidebar-foreground: oklch(0.985 0 0);
-    --sidebar-primary: oklch(0.488 0.243 264.376);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.269 0 0);
-    --sidebar-accent-foreground: oklch(0.985 0 0);
-    --sidebar-border: oklch(1 0 0 / 10%);
-    --sidebar-ring: oklch(0.556 0 0);
-  }
+  --background: var(--nord0);
+  --foreground: var(--nord6);
+  --card: var(--nord1);
+  --card-foreground: var(--nord6);
+  --popover: var(--nord1);
+  --popover-foreground: var(--nord6);
+  --primary: var(--nord8);
+  --primary-foreground: var(--nord0);
+  --secondary: var(--nord2);
+  --secondary-foreground: var(--nord5);
+  --muted: var(--nord2);
+  --muted-foreground: var(--nord4);
+  --accent: var(--nord2);
+  --accent-foreground: var(--nord6);
+  --destructive: var(--nord11);
+  --border: var(--nord3);
+  --input: var(--nord2);
+  --ring: var(--nord8);
+  --chart-1: var(--nord8);
+  --chart-2: var(--nord14);
+  --chart-3: var(--nord13);
+  --chart-4: var(--nord15);
+  --chart-5: var(--nord12);
+  --radius: 0.75rem;
+  --page-glow: radial-gradient(
+    ellipse 120% 100% at 50% 0%,
+    color-mix(in srgb, var(--nord8) 16%, transparent),
+    transparent 72%
+  );
+  --page-glow-size: 100vw 28rem;
+  --sidebar: var(--nord1);
+  --sidebar-foreground: var(--nord6);
+  --sidebar-primary: var(--nord8);
+  --sidebar-primary-foreground: var(--nord0);
+  --sidebar-accent: var(--nord2);
+  --sidebar-accent-foreground: var(--nord6);
+  --sidebar-border: var(--nord3);
+  --sidebar-ring: var(--nord8);
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    @apply bg-background font-sans;
+    font-size: calc(1rem + 1pt);
+    scrollbar-color: var(--nord3) transparent;
+  }
   body {
     @apply bg-background text-foreground;
+    background-image: var(--page-glow);
+    background-repeat: no-repeat;
+    background-size: var(--page-glow-size);
+    background-position: top center;
   }
-  html {
-    @apply font-sans;
-    font-size: calc(1rem + 1pt);
+  ::selection {
+    background: color-mix(in srgb, var(--nord8) 38%, transparent);
+    color: var(--nord6);
   }
 }
 
-/* Pleck Emoji Picker refinement (PLK-75) */
+.cl-modalBackdrop {
+  background: color-mix(in srgb, var(--nord0) 62%, transparent) !important;
+  @apply backdrop-blur-sm;
+}
+
+.cl-modalContent .cl-cardBox {
+  background: color-mix(in srgb, var(--card) 72%, transparent) !important;
+  border: 1px solid color-mix(in srgb, var(--border) 90%, transparent) !important;
+  border-radius: 1rem !important;
+  box-shadow: 0 18px 40px -16px rgba(0, 0, 0, 0.45) !important;
+  @apply backdrop-blur-xl;
+}
+
+.cl-modalContent .cl-scrollBox,
+.cl-modalContent .cl-pageScrollBox {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.cl-modalContent .cl-navbar,
+.cl-modalContent .cl-navbarMobileMenuRow {
+  background: transparent !important;
+  border-right: 1px solid color-mix(in srgb, var(--border) 50%, transparent);
+}
+
+.cl-modalContent .cl-footer {
+  background: transparent !important;
+  border-top: 1px solid color-mix(in srgb, var(--border) 50%, transparent);
+}
+
+.cl-modalContent .cl-navbarButton {
+  color: var(--muted-foreground);
+}
+
+.cl-modalContent .cl-navbarButton:hover {
+  background: color-mix(in srgb, var(--foreground) 6%, transparent);
+  color: var(--foreground);
+}
+
+.cl-modalContent .cl-navbarButton.cl-active {
+  background: color-mix(in srgb, var(--foreground) 8%, transparent) !important;
+  color: var(--foreground);
+}
+
+.cl-modalContent .cl-modalCloseButton {
+  border: 1px solid color-mix(in srgb, var(--nord3) 80%, transparent) !important;
+  border-radius: 0.75rem !important;
+  color: var(--nord6) !important;
+  box-shadow: none !important;
+}
+
+.cl-modalContent .cl-modalCloseButton:hover {
+  background: color-mix(in srgb, var(--foreground) 8%, transparent);
+  border-color: color-mix(in srgb, var(--primary) 50%, transparent) !important;
+}
+
+.cl-modalContent .cl-activeDeviceIcon {
+  filter: invert(0.92);
+  opacity: 0.9;
+}
+
+.cl-menuList {
+  background: color-mix(in srgb, var(--card) 22%, transparent) !important;
+  border: 1px solid color-mix(in srgb, var(--border) 90%, transparent) !important;
+  border-radius: 0.75rem !important;
+  box-shadow: 0 18px 40px -16px rgba(0, 0, 0, 0.45) !important;
+  @apply backdrop-blur-xl;
+}
+
+.cl-menuList .cl-menuItem {
+  color: var(--foreground);
+}
+
+.cl-menuList .cl-menuItem:hover {
+  background: color-mix(in srgb, var(--foreground) 8%, transparent);
+}
+
+.cl-signIn-root .cl-cardBox,
+.cl-signUp-root .cl-cardBox {
+  background: color-mix(in srgb, var(--card) 72%, transparent) !important;
+  border: 1px solid color-mix(in srgb, var(--border) 90%, transparent) !important;
+  border-radius: 1rem !important;
+  box-shadow: 0 18px 40px -16px rgba(0, 0, 0, 0.45) !important;
+  @apply backdrop-blur-xl;
+}
+
+.cl-signIn-root .cl-card,
+.cl-signUp-root .cl-card {
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.cl-signIn-root .cl-footer,
+.cl-signUp-root .cl-footer {
+  background: transparent !important;
+}
+
+.cl-signIn-root .cl-formFieldInput,
+.cl-signUp-root .cl-formFieldInput,
+.cl-signIn-root .cl-input,
+.cl-signUp-root .cl-input {
+  background: color-mix(in srgb, var(--background) 50%, transparent) !important;
+  border-color: color-mix(in srgb, var(--border) 80%, transparent) !important;
+  border-radius: 0.75rem !important;
+  color: var(--foreground);
+}
+
+.feed-toolbar {
+  background-color: var(--background);
+  background-image: var(--page-glow);
+  background-repeat: no-repeat;
+  background-size: var(--page-glow-size);
+  background-position: center -4rem;
+}
+
 .pleck-emoji-picker {
   --epr-font-family: var(--font-sans), system-ui, sans-serif;
   --epr-emoji-size: 28px;
@@ -178,6 +273,105 @@
   --epr-search-input-padding: 0 10px;
   --epr-search-input-border-radius: 10px;
   --epr-picker-border-color: transparent;
+  --epr-dark-picker-border-color: transparent;
+  --epr-bg-color: transparent;
+  --epr-dark-bg-color: transparent;
+  --epr-text-color: var(--muted-foreground);
+  --epr-dark-text-color: var(--muted-foreground);
+  --epr-highlight-color: var(--primary);
+  --epr-dark-highlight-color: var(--primary);
+  --epr-hover-bg-color: color-mix(in srgb, var(--foreground) 8%, transparent);
+  --epr-dark-hover-bg-color: color-mix(
+    in srgb,
+    var(--foreground) 8%,
+    transparent
+  );
+  --epr-hover-bg-color-reduced-opacity: color-mix(
+    in srgb,
+    var(--foreground) 6%,
+    transparent
+  );
+  --epr-dark-hover-bg-color-reduced-opacity: color-mix(
+    in srgb,
+    var(--foreground) 6%,
+    transparent
+  );
+  --epr-focus-bg-color: color-mix(in srgb, var(--foreground) 12%, transparent);
+  --epr-dark-focus-bg-color: color-mix(
+    in srgb,
+    var(--foreground) 12%,
+    transparent
+  );
+  --epr-search-input-bg-color: color-mix(
+    in srgb,
+    var(--background) 50%,
+    transparent
+  );
+  --epr-dark-search-input-bg-color: color-mix(
+    in srgb,
+    var(--background) 50%,
+    transparent
+  );
+  --epr-search-input-bg-color-active: color-mix(
+    in srgb,
+    var(--background) 50%,
+    transparent
+  );
+  --epr-dark-search-input-bg-color-active: color-mix(
+    in srgb,
+    var(--background) 50%,
+    transparent
+  );
+  --epr-search-input-text-color: var(--foreground);
+  --epr-search-input-placeholder-color: color-mix(
+    in srgb,
+    var(--nord4) 62%,
+    var(--nord3)
+  );
+  --epr-search-border-color: color-mix(in srgb, var(--border) 80%, transparent);
+  --epr-search-border-color-active: var(--primary);
+  --epr-category-label-bg-color: color-mix(
+    in srgb,
+    var(--background) 82%,
+    var(--card)
+  );
+  --epr-dark-category-label-bg-color: color-mix(
+    in srgb,
+    var(--background) 82%,
+    var(--card)
+  );
+  --epr-category-label-text-color: var(--muted-foreground);
+  --epr-category-icon-active-color: var(--primary);
+  --epr-dark-category-icon-active-color: var(--primary);
+  --epr-category-icon-inactive-color: var(--nord4);
+  --epr-dark-category-icon-inactive-color: var(--nord4);
+  --epr-emoji-variation-picker-bg-color: color-mix(
+    in srgb,
+    var(--background) 88%,
+    var(--card)
+  );
+  --epr-dark-emoji-variation-picker-bg-color: color-mix(
+    in srgb,
+    var(--background) 88%,
+    var(--card)
+  );
+  --epr-emoji-variation-indicator-color: var(--nord3);
+  --epr-dark-emoji-variation-indicator-color: var(--nord3);
+  --epr-skin-tone-picker-menu-color: color-mix(
+    in srgb,
+    var(--background) 88%,
+    var(--card)
+  );
+  --epr-dark-skin-tone-picker-menu-color: color-mix(
+    in srgb,
+    var(--background) 88%,
+    var(--card)
+  );
+  --epr-skin-tone-outer-border-color: var(--nord3);
+  --epr-dark-skin-tone-outer-border-color: var(--nord3);
+  --epr-reactions-bg-color: transparent;
+  --epr-dark-reactions-bg-color: transparent;
+  --epr-dark: var(--nord0);
 }
 
 body .pleck-emoji-picker [data-epr-part="category-label"],

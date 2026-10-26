@@ -28,7 +28,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  colorScheme: "light dark",
+  colorScheme: "dark",
 };
 
 export default function RootLayout({
@@ -42,11 +42,41 @@ export default function RootLayout({
       className={`${roboto.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground transition-colors">
-        <ClerkProvider appearance={{ theme: shadcn }}>
-          <header className="mx-auto flex h-16 w-full items-center justify-between px-3.5 sm:px-6">
+        <ClerkProvider
+          appearance={{
+            theme: shadcn,
+            elements: {
+              input:
+                "border border-input bg-background/60 text-foreground placeholder:text-muted-foreground",
+              cardBox: "border border-border/80 bg-card shadow-xl",
+              socialButtonsBlockButton:
+                "border-border bg-background/40 text-foreground hover:bg-muted",
+              userButtonPopoverCard: {
+                background: "color-mix(in srgb, var(--card) 20%, transparent)",
+                backdropFilter: "blur(24px)",
+                border:
+                  "1px solid color-mix(in srgb, var(--border) 90%, transparent)",
+                borderRadius: "1rem",
+                boxShadow: "0 18px 40px -16px rgba(0, 0, 0, 0.45)",
+              },
+              userButtonPopoverMain: {
+                background: "transparent",
+                boxShadow: "none",
+              },
+              userButtonPopoverActionButton:
+                "text-foreground hover:bg-foreground/8",
+              userButtonPopoverFooter: {
+                background: "transparent",
+                borderTop:
+                  "1px solid color-mix(in srgb, var(--border) 50%, transparent)",
+              },
+            },
+          }}
+        >
+          <header className="mx-auto flex h-16 w-full items-center justify-between border-b border-border/50 px-3.5 sm:px-6">
             <Link
               href="/"
-              className="text-lg font-semibold tracking-tight text-foreground transition-opacity hover:opacity-80"
+              className="text-lg font-semibold tracking-tight text-foreground transition-colors hover:text-primary"
             >
               <i>Pleck</i>
             </Link>
