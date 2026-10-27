@@ -8,7 +8,7 @@ import {
   UserButton,
 } from "@clerk/nextjs";
 import { shadcn } from "@clerk/ui/themes";
-import { Roboto, Geist_Mono } from "next/font/google";
+import { IBM_Plex_Mono, Roboto } from "next/font/google";
 import "./globals.css";
 
 const roboto = Roboto({
@@ -17,9 +17,10 @@ const roboto = Roboto({
   weight: ["300", "400", "500", "700"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const plexMono = IBM_Plex_Mono({
+  variable: "--font-plex-mono",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -39,9 +40,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${roboto.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${roboto.variable} ${plexMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-background text-foreground transition-colors">
+      <body className="min-h-full flex flex-col text-foreground transition-colors">
         <ClerkProvider
           appearance={{
             theme: shadcn,
@@ -73,12 +74,9 @@ export default function RootLayout({
             },
           }}
         >
-          <header className="mx-auto flex h-16 w-full items-center justify-between border-b border-border/50 px-3.5 sm:px-6">
-            <Link
-              href="/"
-              className="text-lg font-semibold tracking-tight text-foreground transition-colors hover:text-primary"
-            >
-              <i>Pleck</i>
+          <header className="mx-auto flex h-16 w-full items-center justify-between px-3.5 sm:px-6 mb-4">
+            <Link href="/" className="pleck-logo">
+              pleck
             </Link>
             <div className="flex items-center gap-3">
               <Show when="signed-out">

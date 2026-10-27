@@ -272,7 +272,7 @@ export function Composer({ circleId }: { circleId: number }) {
                 onSelectEmoji={handleSelectEmoji}
                 disabled={submitting}
               />
-              <span className="text-[0.7rem] sm:text-xs tabular-nums text-muted-foreground/80">
+              <span className="font-mono text-[0.7rem] sm:text-xs text-muted-foreground/80">
                 {caption.length}/{MAX_TEXT_LENGTH}
               </span>
             </div>
@@ -290,7 +290,7 @@ export function Composer({ circleId }: { circleId: number }) {
                 ? "Write a memory, moment, or quick thought…"
                 : "Add a caption…"
             }
-            className="min-h-[140px] resize-none rounded-xl border-border/80 bg-background/50 p-3 text-base md:text-sm leading-relaxed transition-colors placeholder:text-muted-foreground/60 focus-visible:border-ring focus-visible:ring-1"
+            className="min-h-[140px] resize-none rounded-xl border-border/80 bg-background/50 p-3 font-sans text-base md:text-sm leading-relaxed transition-colors placeholder:text-muted-foreground/60 focus-visible:border-ring focus-visible:ring-1"
             onKeyDown={(e) => {
               if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
                 e.currentTarget.form?.requestSubmit();

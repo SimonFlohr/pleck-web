@@ -53,7 +53,7 @@ export default async function FeedPage({ searchParams }: Props) {
   const currentMember = { id: member.id, role: member.role };
 
   return (
-    <main className="mx-auto w-full max-w-xl sm:max-w-2xl px-3.5 sm:px-6 pb-24">
+    <main className="mx-auto w-full max-w-2xl sm:max-w-3xl px-3.5 sm:px-6 pb-24">
       <h1 className="sr-only">Pleck feed</h1>
       <PullToRefresh>
         <FeedToolbar>

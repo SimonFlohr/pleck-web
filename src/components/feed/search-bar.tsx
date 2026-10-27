@@ -24,7 +24,7 @@ export function SearchBar({ placeholder }: { placeholder: string }) {
       startTransition(() => {
         router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
       });
-    }, 300);
+    }, 100);
 
     return () => clearTimeout(timer);
   }, [value, searchParams, pathname, router]);
