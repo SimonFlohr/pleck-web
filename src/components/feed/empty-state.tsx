@@ -16,7 +16,9 @@ const COPY = {
 export function EmptyState({ q, language }: { q: string; language: Language }) {
   const t = COPY[language];
   return (
-    <div className="py-16 text-center text-muted-foreground">
+    <div
+      className={`py-16 text-center text-muted-foreground ${q ? "pleck-fade" : "pleck-rise"}`}
+    >
       {q ? (
         <>
           <p>{t.noResults(q)}</p>

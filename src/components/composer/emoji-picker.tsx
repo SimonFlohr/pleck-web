@@ -80,7 +80,7 @@ const nordPickerStyle = {
   "--epr-reactions-bg-color": "transparent",
   "--epr-dark-reactions-bg-color": "transparent",
   "--epr-dark": "var(--nord0)",
-  "--epr-font-family": "var(--font-sans), system-ui, sans-serif",
+  "--epr-font-family": "var(--font-mono), ui-monospace, monospace",
   "--epr-emoji-size": "28px",
   "--epr-category-label-height": "28px",
   "--epr-category-label-padding": "0 10px",
@@ -119,7 +119,7 @@ export function EmojiPicker({ onSelectEmoji, disabled }: Props) {
 								font-weight: 400 !important;
 								letter-spacing: 0.01em !important;
 								color: var(--muted-foreground) !important;
-								font-family: var(--font-sans), system-ui, sans-serif !important;
+								font-family: var(--font-mono), ui-monospace, monospace !important;
 							}
 							.pleck-emoji-picker [data-epr-part="emoji"],
 							.pleck-emoji-picker [data-epr-part="emoji"] * {
@@ -129,7 +129,7 @@ export function EmojiPicker({ onSelectEmoji, disabled }: Props) {
 							.pleck-emoji-picker input::placeholder {
 								font-size: 0.85rem !important;
 								font-weight: 400 !important;
-								font-family: var(--font-sans), system-ui, sans-serif !important;
+								font-family: var(--font-mono), ui-monospace, monospace !important;
 							}
 						`}</style>
             <Picker

@@ -15,7 +15,9 @@ export default async function ComposePage() {
   return (
     <main className="mx-auto w-full max-w-xl px-4 py-6">
       <div className="mb-4 flex items-center justify-between">
-        <h1 className="text-lg font-semibold">New spark</h1>
+        <h1 className="font-mono text-lg font-medium tracking-tight">
+          New spark
+        </h1>
         <Link
           href="/"
           className="text-sm text-muted-foreground hover:underline"
