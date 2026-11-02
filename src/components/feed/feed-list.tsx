@@ -1,9 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { mergePages } from "@/lib/feed/groups";
+import { mergeDemoItems } from "@/lib/demo/merge";
+import {
+  emptyDemoSparks,
+  readDemoSparks,
+  removeDemoSpark,
+  subscribeDemoSparks,
+} from "@/lib/demo/memory";
 import type { FeedPage } from "@/lib/feed/types";
 import { formatDayHeader, type Reader } from "@/lib/format";
 import { SparkCard } from "./spark-card";
@@ -14,6 +21,7 @@ type Props = {
   reader: Reader;
   currentMember: { id: number; role: "owner" | "member" };
   q: string;
+  demo?: boolean;
 };
 
 function DayHeading({
@@ -46,18 +54,33 @@ function DayHeading({
   );
 }
 
-export function FeedList({ initialPage, reader, currentMember, q }: Props) {
-  const [groups, setGroups] = useState(initialPage.groups);
+export function FeedList({
+  initialPage,
+  reader,
+  currentMember,
+  q,
+  demo = false,
+}: Props) {
+  const [serverGroups, setServerGroups] = useState(initialPage.groups);
   const [cursor, setCursor] = useState(initialPage.nextCursor);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [prevInitialPage, setPrevInitialPage] = useState(initialPage);
+  const demoSparks = useSyncExternalStore(
+    subscribeDemoSparks,
+    readDemoSparks,
+    emptyDemoSparks,
+  );
 
   if (initialPage !== prevInitialPage) {
     setPrevInitialPage(initialPage);
-    setGroups(initialPage.groups);
+    setServerGroups(initialPage.groups);
     setCursor(initialPage.nextCursor);
   }
+
+  const groups = demo
+    ? mergeDemoItems(serverGroups, demoSparks, q)
+    : serverGroups;
 
   async function loadMore() {
     if (!cursor) return;
@@ -66,10 +89,11 @@ export function FeedList({ initialPage, reader, currentMember, q }: Props) {
     try {
       const params = new URLSearchParams({ cursor });
       if (q) params.set("q", q);
+      if (demo) params.set("demo", "1");
       const res = await fetch(`/api/feed?${params}`);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const page: FeedPage = await res.json();
-      setGroups((prev) => mergePages(prev, page.groups));
+      setServerGroups((prev) => mergePages(prev, page.groups));
       setCursor(page.nextCursor);
     } catch {
       setError("Couldn't load more. Try again.");
@@ -82,7 +106,11 @@ export function FeedList({ initialPage, reader, currentMember, q }: Props) {
     return <EmptyState q={q} language={reader.language} />;
 
   function handleDelete(sparkId: number) {
-    setGroups((prev) =>
+    if (sparkId < 0) {
+      removeDemoSpark(sparkId);
+      return;
+    }
+    setServerGroups((prev) =>
       prev
         .map((group) => ({
           ...group,
@@ -115,6 +143,7 @@ export function FeedList({ initialPage, reader, currentMember, q }: Props) {
                 item={item}
                 reader={reader}
                 currentMember={currentMember}
+                demo={demo}
                 onDelete={handleDelete}
                 motionClass={motion}
                 motionDelay={nextDelay()}
