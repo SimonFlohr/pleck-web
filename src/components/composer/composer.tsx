@@ -20,15 +20,33 @@ import {
   uploadToS3,
 } from "@/lib/media/prepare-photo";
 import { postSpark } from "@/lib/sparks/client";
+import { localDate } from "@/lib/local-date";
+import { nextDemoSparkId, saveDemoSpark } from "@/lib/demo/memory";
 
 type SparkKind = "text" | "photo";
+
+type DemoAuthor = {
+  id: number;
+  displayName: string;
+  timezone: string;
+};
+
+const DEMO_PHOTO_BYTES = 8 * 1024 * 1024;
 
 const PHOTO_ACCEPT = "image/jpeg,image/png,image/webp";
 
 const photoActionClass =
   "cursor-pointer rounded-xl border-border/50 bg-background/40 text-foreground shadow-none hover:border-border/80 hover:bg-background/55";
 
-export function Composer({ circleId }: { circleId: number }) {
+export function Composer({
+  circleId,
+  demoAuthor,
+  afterPostHref = "/",
+}: {
+  circleId: number;
+  demoAuthor?: DemoAuthor;
+  afterPostHref?: string;
+}) {
   const router = useRouter();
   const [kind, setKind] = useState<SparkKind>("text");
   const [caption, setCaption] = useState("");
@@ -105,6 +123,18 @@ export function Composer({ circleId }: { circleId: number }) {
     if (!canSubmit || submitting) return;
     setError(null);
     try {
+      if (demoAuthor) {
+        await postDemoSpark({
+          kind,
+          caption,
+          file,
+          author: demoAuthor,
+          setStatus,
+        });
+        router.push(afterPostHref);
+        router.refresh();
+        return;
+      }
       if (kind === "text") {
         setStatus("Posting…");
         await postSpark({ type: "text", textContent: caption });
@@ -134,7 +164,7 @@ export function Composer({ circleId }: { circleId: number }) {
           },
         });
       }
-      router.push("/");
+      router.push(afterPostHref);
       router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
@@ -310,6 +340,11 @@ export function Composer({ circleId }: { circleId: number }) {
       </div>
 
       <div className="sticky bottom-0 -mx-4 -mb-6 mt-2 border-t border-border/50 bg-background/90 px-4 py-3 backdrop-blur-md sm:static sm:mx-0 sm:mb-0 sm:border-0 sm:bg-transparent sm:p-0">
+        {demoAuthor && (
+          <p className="mb-2 text-center text-xs leading-relaxed text-muted-foreground">
+            This spark stays in this tab. Refreshing the page clears it.
+          </p>
+        )}
         <Button
           type="submit"
           className="w-full h-10 rounded-xl font-medium shadow-xs transition-all cursor-pointer disabled:cursor-not-allowed"
@@ -327,4 +362,63 @@ export function Composer({ circleId }: { circleId: number }) {
       </div>
     </form>
   );
+}
+
+async function postDemoSpark({
+  kind,
+  caption,
+  file,
+  author,
+  setStatus,
+}: {
+  kind: SparkKind;
+  caption: string;
+  file: File | null;
+  author: DemoAuthor;
+  setStatus: (status: string | null) => void;
+}) {
+  const now = new Date();
+  let mediaUrl: string | null = null;
+  let mediaMime: string | null = null;
+
+  if (kind === "photo" && file) {
+    if (file.size > DEMO_PHOTO_BYTES) {
+      throw new Error("Demo photos need to be under 8 MB.");
+    }
+    setStatus("Preparing…");
+    const prepared = await optimizePhoto(file);
+    mediaUrl = await fileToDataUrl(prepared);
+    if (mediaUrl.length > 1_800_000) {
+      throw new Error(
+        "That photo is too large for the demo. Try a smaller one.",
+      );
+    }
+    mediaMime = prepared.type;
+  } else {
+    setStatus("Posting…");
+  }
+
+  saveDemoSpark({
+    id: nextDemoSparkId(),
+    type: kind,
+    textContent: caption.trim() || null,
+    authorMemberId: author.id,
+    authorName: author.displayName,
+    authorAvatarUrl: null,
+    authorTimezone: author.timezone,
+    authorLocalDate: localDate(now, author.timezone),
+    createdAt: now.toISOString(),
+    mediaKey: null,
+    mediaMime,
+    mediaUrl,
+  });
+}
+
+function fileToDataUrl(file: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result));
+    reader.onerror = () => reject(new Error("Couldn't read that photo"));
+    reader.readAsDataURL(file);
+  });
 }

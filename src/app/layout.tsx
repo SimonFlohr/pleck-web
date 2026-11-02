@@ -8,6 +8,7 @@ import {
   UserButton,
 } from "@clerk/nextjs";
 import { shadcn } from "@clerk/ui/themes";
+import { Sparkles } from "lucide-react";
 import { IBM_Plex_Mono, Roboto } from "next/font/google";
 import "./globals.css";
 
@@ -80,6 +81,13 @@ export default function RootLayout({
             </Link>
             <div className="flex items-center gap-3">
               <Show when="signed-out">
+                <Link
+                  href="/demo"
+                  className="inline-flex items-center gap-1 rounded-full border border-primary/55 bg-primary/15 px-2.5 py-1 text-xs font-medium text-primary shadow-2xs transition-colors hover:border-primary hover:bg-primary/25"
+                >
+                  <Sparkles className="size-3" />
+                  Try demo
+                </Link>
                 <SignInButton>
                   <button className="text-xs sm:text-sm font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
                     Sign In

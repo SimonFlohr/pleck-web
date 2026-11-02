@@ -5,6 +5,7 @@ import { config } from "dotenv";
 import { randomUUID } from "crypto";
 import { familyCircles, members, sparks } from "./schema";
 import { localDate } from "../local-date";
+import { ensureDemoCircle } from "./seed-demo";
 
 config({ path: ".env.local" });
 
@@ -67,13 +68,12 @@ const MEMBERS = [
     email: "simonflohr31+daniel@pleck.dev",
     role: "member" as const,
     timezone: "Europe/Amsterdam",
-    language: "en" as const, // reads English in the Netherlands
+    language: "en" as const,
   },
 ];
 
 // ══════════════════════════════════════════════
 //  Spark definitions
-//  ~40 sparks across 3 weeks, every author, both languages
 // ══════════════════════════════════════════════
 
 interface SparkDef {
@@ -81,15 +81,10 @@ interface SparkDef {
   utcIso: string;
   type: "photo" | "voice" | "text";
   textContent: string | null;
-  tag?: string; // human label for edge-case identification
+  tag?: string;
 }
 
-// Week 1: Oct 4–10 2026
-// Week 2: Oct 11–17 2026
-
 const SPARK_DEFS: SparkDef[] = [
-  // ── Week 1 ──────────────────────────────────────────
-  // SUNDAY DINNER — 18:55 Chicago = 01:55 Monday Amsterdam
   {
     authorName: "Simon",
     utcIso: "2026-10-04T23:55:00Z",
@@ -97,7 +92,6 @@ const SPARK_DEFS: SparkDef[] = [
     textContent: "Sunday dinner, whole table set",
     tag: "sunday-dinner",
   },
-  // THE "TOMORROW" ROW — Femke at 00:30 Mon AMS = 17:30 Sun Chicago
   {
     authorName: "Femke",
     utcIso: "2026-10-04T22:30:00Z",
@@ -178,8 +172,6 @@ const SPARK_DEFS: SparkDef[] = [
     type: "text",
     textContent: "LEGO Technic finished! Took us a week and a half",
   },
-
-  // ── Week 2 ──────────────────────────────────────────
   {
     authorName: "Nico",
     utcIso: "2026-10-11T07:00:00Z",
@@ -348,7 +340,6 @@ const SPARK_DEFS: SparkDef[] = [
 // ══════════════════════════════════════════════
 
 async function seed() {
-  // 🚨 SAFETY CIRCUIT BREAKER (Tier 1): Endpoint & Environment Sniffing
   const dbUrl = process.env.DATABASE_URL ?? "";
   const PROD_ENDPOINT_MARKERS = [
     "ep-polished-darkness",
@@ -376,7 +367,6 @@ async function seed() {
     process.exit(1);
   }
 
-  // 🚨 SAFETY CIRCUIT BREAKER (Tier 2): Pre-deletion Database Content Inspection
   try {
     const [prodCircle] = await db
       .select()
@@ -403,19 +393,15 @@ async function seed() {
       );
       process.exit(1);
     }
-  } catch {
-    // Non-blocking if tables are not yet created
-  }
+  } catch {}
 
   console.log("🌱 Seeding database...\n");
 
-  // 1. Clear existing data (reverse FK order)
   console.log("  Clearing existing data...");
   await db.delete(sparks);
   await db.delete(members);
   await db.delete(familyCircles);
 
-  // 2. Create the circle
   console.log("  Creating family circle...");
   const [circle] = await db
     .insert(familyCircles)
@@ -428,10 +414,8 @@ async function seed() {
 
   console.log(`  ✓ Circle "${circle.name}" (id: ${circle.id})\n`);
 
-  // 3. Insert members
   console.log("  Creating members...");
 
-  // Auto-link existing Clerk users by email so active dev sessions aren't unlinked
   const clerkUsersByEmail = new Map<string, string>();
   try {
     if (process.env.CLERK_SECRET_KEY) {
@@ -444,9 +428,7 @@ async function seed() {
         }
       }
     }
-  } catch {
-    // Non-blocking: if Clerk API is unreachable, seed still succeeds
-  }
+  } catch {}
 
   const insertedMembers = await db
     .insert(members)
@@ -476,14 +458,12 @@ async function seed() {
     );
   }
 
-  // 4. Set owner_member_id on the circle
   const simon = memberByName.get("Simon")!;
   await db.execute(
     `UPDATE family_circles SET owner_member_id = ${simon.id} WHERE id = ${circle.id}`,
   );
   console.log(`\n  ✓ Circle owner → Simon (member id: ${simon.id})\n`);
 
-  // 5. Insert sparks
   console.log("  Creating sparks...");
   const sparkValues = SPARK_DEFS.map((def) => {
     const member = memberByName.get(def.authorName);
@@ -510,7 +490,6 @@ async function seed() {
 
   console.log(`  ✓ ${insertedSparks.length} sparks created\n`);
 
-  // 6. Summary
   const byAuthor = new Map<string, number>();
   for (const def of SPARK_DEFS) {
     byAuthor.set(def.authorName, (byAuthor.get(def.authorName) ?? 0) + 1);
@@ -526,7 +505,6 @@ async function seed() {
     `\n  By type: ${types.photo} photo, ${types.voice} voice, ${types.text} text`,
   );
 
-  // 7. Edge-case verification
   const femke = memberByName.get("Femke")!;
   const sundayDinner = SPARK_DEFS.find((d) => d.tag === "sunday-dinner")!;
   const tomorrow = SPARK_DEFS.find((d) => d.tag === "tomorrow")!;
@@ -542,6 +520,8 @@ async function seed() {
   console.log(
     `    EU DST        → AMS: ${localDate(euDst.utcIso, femke.timezone)}`,
   );
+
+  await ensureDemoCircle();
 
   console.log("\n🌱 Seed complete!");
 }

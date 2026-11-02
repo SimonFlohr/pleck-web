@@ -20,6 +20,7 @@ export function SparkCard({
   onDelete,
   motionClass,
   motionDelay = 0,
+  demo = false,
 }: {
   item: FeedItem;
   reader: Reader;
@@ -27,16 +28,23 @@ export function SparkCard({
   onDelete: (id: number) => void;
   motionClass?: string;
   motionDelay?: number;
+  demo?: boolean;
 }) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const canDelete =
-    currentMember.id === item.authorMemberId || currentMember.role === "owner";
+  const canDelete = demo
+    ? item.id < 0
+    : currentMember.id === item.authorMemberId ||
+      currentMember.role === "owner";
   const [enterDelay] = useState(motionDelay);
 
   async function handleConfirmDelete() {
+    if (item.id < 0) {
+      onDelete(item.id);
+      return;
+    }
     setIsDeleting(true);
     setError(null);
     try {

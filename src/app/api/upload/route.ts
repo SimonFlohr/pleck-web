@@ -7,6 +7,8 @@ import { members } from "@/lib/db/schema";
 import { s3, BUCKET } from "@/lib/s3";
 import { randomUUID } from "crypto";
 import { ALLOWED_TYPES, MAX_SIZE_BYTES } from "@/lib/media-types";
+import { getViewer } from "@/lib/auth/viewer";
+import { demoWriteResponse } from "@/lib/demo/guard";
 
 // ── Config ────────────────────────────────────
 const PRESIGN_EXPIRES_SECONDS = 300; // 5 minutes
@@ -14,6 +16,10 @@ const PRESIGN_EXPIRES_SECONDS = 300; // 5 minutes
 // ── Route ─────────────────────────────────────
 export async function POST(req: Request) {
   // 1. Authenticate
+  const viewer = await getViewer();
+  const blocked = demoWriteResponse(viewer);
+  if (blocked) return blocked;
+
   const { userId: clerkUserId } = await auth();
   if (!clerkUserId) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });

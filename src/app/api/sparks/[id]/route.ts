@@ -2,6 +2,7 @@ import { eq, and, isNull } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { sparks } from "@/lib/db/schema";
 import { getViewer } from "@/lib/auth/viewer";
+import { demoWriteResponse } from "@/lib/demo/guard";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -9,6 +10,8 @@ type Props = {
 
 export async function DELETE(_req: Request, { params }: Props) {
   const viewer = await getViewer();
+  const blocked = demoWriteResponse(viewer);
+  if (blocked) return blocked;
   if (viewer.status !== "member") {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
