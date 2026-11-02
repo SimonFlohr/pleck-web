@@ -2,6 +2,14 @@ import { presignGet } from "@/lib/s3";
 import { getFeedPage, type FeedQueryOptions } from "./query";
 import type { FeedPage } from "./types";
 
+const LOCAL_MEDIA = /^demo\/[a-z0-9-]+\.(svg|webp|jpe?g|png)$/;
+
+async function mediaUrlFor(key: string | null): Promise<string | null> {
+  if (!key) return null;
+  if (LOCAL_MEDIA.test(key)) return `/${key}`;
+  return presignGet(key);
+}
+
 export async function loadFeedPage(
   circleId: number,
   opts: FeedQueryOptions = {},
@@ -14,7 +22,7 @@ export async function loadFeedPage(
       items: await Promise.all(
         group.items.map(async (item) => ({
           ...item,
-          mediaUrl: item.mediaKey ? await presignGet(item.mediaKey) : null,
+          mediaUrl: await mediaUrlFor(item.mediaKey),
         })),
       ),
     })),

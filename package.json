@@ -11,6 +11,7 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:seed": "tsx src/lib/db/seed.ts",
+    "db:seed-demo": "tsx src/lib/db/seed-demo.ts",
     "db:init-prod": "tsx src/lib/db/init-family.ts"
   },
   "dependencies": {
