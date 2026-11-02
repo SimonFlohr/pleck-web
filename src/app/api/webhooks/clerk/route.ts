@@ -5,6 +5,7 @@ import { clerkClient } from "@clerk/nextjs/server";
 import { eq, and, isNull } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { members } from "@/lib/db/schema";
+import { DEMO_MEMBER_EMAIL } from "@/lib/demo/constants";
 
 export async function POST(req: Request) {
   const WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET;
@@ -97,6 +98,11 @@ export async function POST(req: Request) {
   if (!email) {
     console.log(`User ${clerkUserId} has no email address — skipping link`);
     return new Response("No email address", { status: 200 });
+  }
+
+  if (email === DEMO_MEMBER_EMAIL) {
+    console.log(`Skipping demo member link for ${clerkUserId}`);
+    return new Response("Demo member is not linkable", { status: 200 });
   }
 
   // 3. Already linked by clerk_user_id?

@@ -6,6 +6,7 @@ import { localDate } from "@/lib/local-date";
 import { ALLOWED_TYPES } from "@/lib/media-types";
 import { createSparkSchema } from "@/lib/sparks/schema";
 import { enqueueCategorization } from "@/lib/categorize";
+import { demoWriteResponse } from "@/lib/demo/guard";
 
 /**
  * EXIF DateTimeOriginal has no timezone, e.g. "2026:10:04 18:55:00".
@@ -25,6 +26,8 @@ function exifToInstant(raw: string | undefined, zone: string): Date | null {
 export async function POST(req: Request) {
   // 1. Auth + membership
   const viewer = await getViewer();
+  const blocked = demoWriteResponse(viewer);
+  if (blocked) return blocked;
   if (viewer.status !== "member") {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
