@@ -27,6 +27,10 @@ const plexMono = IBM_Plex_Mono({
 export const metadata: Metadata = {
   title: "Pleck",
   description: "Your family's private archive of everyday moments.",
+  icons: {
+    icon: "/favicon.png",
+    apple: "/apple-touch-icon.png",
+  },
 };
 
 export const viewport: Viewport = {
