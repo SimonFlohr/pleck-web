@@ -3,15 +3,14 @@ import { db } from "@/lib/db";
 import { sparks } from "@/lib/db/schema";
 import { getViewer } from "@/lib/auth/viewer";
 import { localDate } from "@/lib/local-date";
-import { ALLOWED_TYPES } from "@/lib/media-types";
 import { createSparkSchema } from "@/lib/sparks/schema";
+import {
+  isAllowedPhotoMime,
+  mediaKeyBelongsToCircle,
+} from "@/lib/sparks/policy";
 import { enqueueCategorization } from "@/lib/categorize";
 import { demoWriteResponse } from "@/lib/demo/guard";
 
-/**
- * EXIF DateTimeOriginal has no timezone, e.g. "2026:10:04 18:55:00".
- * Interpret it in the author's zone.
- */
 function exifToInstant(raw: string | undefined, zone: string): Date | null {
   if (!raw) return null;
   const m = raw.match(/^(\d{4}):(\d{2}):(\d{2}) (\d{2}):(\d{2}):(\d{2})/);
@@ -24,7 +23,6 @@ function exifToInstant(raw: string | undefined, zone: string): Date | null {
 }
 
 export async function POST(req: Request) {
-  // 1. Auth + membership
   const viewer = await getViewer();
   const blocked = demoWriteResponse(viewer);
   if (blocked) return blocked;
@@ -33,7 +31,6 @@ export async function POST(req: Request) {
   }
   const { member } = viewer;
 
-  // 2. Validate
   let json: unknown;
   try {
     json = await req.json();
@@ -50,8 +47,6 @@ export async function POST(req: Request) {
   }
   const input = parsed.data;
 
-  // 3. Snapshot time context. One `now` for both columns, so they can never disagree,
-  //    and created_at gets millisecond precision.
   const now = new Date();
   const base = {
     circleId: member.circleId,
@@ -68,15 +63,10 @@ export async function POST(req: Request) {
   } else {
     const { media } = input;
 
-    // The key must belong to THIS member's circle. Otherwise a malicious
-    // client could attach another circle's object to its own spark.
-    if (
-      !media.key.startsWith(`circles/${member.circleId}/sparks/`) ||
-      media.key.includes("..")
-    ) {
+    if (!mediaKeyBelongsToCircle(media.key, member.circleId)) {
       return Response.json({ error: "Invalid media key" }, { status: 403 });
     }
-    if (!media.mime.startsWith("image/") || !ALLOWED_TYPES[media.mime]) {
+    if (!isAllowedPhotoMime(media.mime)) {
       return Response.json(
         { error: "Unsupported media type" },
         { status: 400 },
@@ -96,13 +86,11 @@ export async function POST(req: Request) {
     };
   }
 
-  // 4. Persist
   const [spark] = await db
     .insert(sparks)
     .values(values)
     .returning({ id: sparks.id, authorLocalDate: sparks.authorLocalDate });
 
-  // 5. Categorization
   enqueueCategorization(spark.id);
 
   return Response.json({ spark }, { status: 201 });
