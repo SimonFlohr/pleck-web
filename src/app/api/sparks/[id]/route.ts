@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import { sparks } from "@/lib/db/schema";
 import { getViewer } from "@/lib/auth/viewer";
 import { demoWriteResponse } from "@/lib/demo/guard";
+import { sparkDeleteAccess } from "@/lib/sparks/policy";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -22,7 +23,6 @@ export async function DELETE(_req: Request, { params }: Props) {
     return Response.json({ error: "Invalid spark ID" }, { status: 400 });
   }
 
-  // 1. Fetch spark (only active rows)
   const [spark] = await db
     .select({
       id: sparks.id,
@@ -37,23 +37,17 @@ export async function DELETE(_req: Request, { params }: Props) {
     return Response.json({ error: "Spark not found" }, { status: 404 });
   }
 
-  // 2. Ensure spark belongs to the user's circle
-  if (spark.circleId !== viewer.member.circleId) {
+  const access = sparkDeleteAccess(viewer.member, spark);
+  if (access === "outside-circle") {
     return Response.json({ error: "Forbidden" }, { status: 403 });
   }
-
-  // 3. Permission: author or circle owner
-  const isAuthor = spark.authorMemberId === viewer.member.id;
-  const isOwner = viewer.member.role === "owner";
-
-  if (!isAuthor && !isOwner) {
+  if (access === "not-author-or-owner") {
     return Response.json(
       { error: "You don't have permission to delete this spark" },
       { status: 403 },
     );
   }
 
-  // 4. Soft delete
   await db
     .update(sparks)
     .set({ deletedAt: new Date() })
