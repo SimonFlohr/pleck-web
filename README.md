@@ -1,4 +1,4 @@
-# 🅿 Pleck ![Verify](https://img.shields.io/github/actions/workflow/status/SimonFlohr/pleck-web/ci.yml?branch=main&label=Verify)
+# 🅿 Pleck | ![Verify](https://img.shields.io/github/actions/workflow/status/SimonFlohr/pleck-web/ci.yml?branch=main&label=Verify)
 
 > A private feed for one family. Sparks land on a shared timeline, grouped by the author's local day.
 
